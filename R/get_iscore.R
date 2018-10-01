@@ -23,12 +23,13 @@
 
 
 
-get_iscore<- function(gene, terms_of_interest, is.list = F, max.score = 500){
+get_iscore<- function(gene, terms_of_interest, is.list = F, max.score = 500, verbose = T){
   require(data.table)
   require(rentrez)
   all_combinations <- expand.grid(gene, terms_of_interest)
   all_combinations$count <- -1
   for (index in 1:nrow(all_combinations)){
+
     print(index)
     search_topic <- paste0(all_combinations$Var1[index], ' AND ', all_combinations$Var2[index])
     tryCatch(
@@ -55,7 +56,7 @@ get_iscore<- function(gene, terms_of_interest, is.list = F, max.score = 500){
   }
   if (is.list) {
     list_iscore <- sum(all_combinations$count)/length(gene)
-    iscore <- list(list_iscore = gene_iscore, counts = all_combinations)
+    iscore <- list(list_iscore = list_iscore, counts = all_combinations)
     return(iscore)
 
     return(all_combinations)
