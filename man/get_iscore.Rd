@@ -4,17 +4,17 @@
 \alias{get_iscore}
 \title{get_iscore}
 \usage{
-get_iscore(love = TRUE)
+get_iscore(gene, terms_of_interest, is.list = F, max.score = 500)
 }
 \arguments{
+\item{gene}{The gene which you want to calculate the iscore for, or a vector with multiple genes}
+
 \item{terms_of_interest}{A list of terms of interest related to the topic you want to find the relevance for}
 
-\item{gene}{The gene which you want to calculate the iscore for, or a vector with multiple genes}
+\item{is.list}{If you are searching a single gene or a list of genes. Defaults to false (single gene)}
 
 \item{max.score}{A cutoff for maximum numbers of search. Useful for avoiding outlier relations
 weighting too much. Defaults to 500.}
-
-\item{is.list}{If you are searching a single gene or a list of genes. Defaults to false (single gene)}
 }
 \description{
 Calculates the importance score for a given gene.
