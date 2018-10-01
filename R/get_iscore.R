@@ -17,7 +17,7 @@
 #'gene <- 'CD4'
 #'terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
 #'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#'get_iscore(gene, terms_of_interest, max.score = 500)
+hm <- get_iscore(gene, terms_of_interest, max.score = 500)
 #'get_iscore(gene, terms_of_interest, max.score = Inf)
 
 
@@ -38,12 +38,21 @@ get_iscore<- function(gene, terms_of_interest, is.list = F, max.score = 500, ver
                          retmax = 3),
 
       error=function(e){
-        print("Query failed! Not your lucky day, but I'm trying again")
-        Sys.sleep(1)
-        s <- entrez_search(db = "pubmed",
-                           term = search_topic,
-                           retmax = 3)
-        print("Actually, you are safe. ")
+        tryCatch(
+          print("Query failed, but I'm trying again"),
+          Sys.sleep(1),
+          s <- entrez_search(db = "pubmed",
+                             term = search_topic,
+                             retmax = 3),
+
+          error=function(e){
+            print("Query failed! Not your lucky day, but I'm trying again")
+            Sys.sleep(1)
+            s <- entrez_search(db = "pubmed",
+                               term = search_topic,
+                               retmax = 3)
+            print("Actually, you are safe. ")
+          })
       })
     all_combinations$count[index] <- s$count
   }
