@@ -4,7 +4,8 @@
 \alias{get_iscore}
 \title{get_iscore}
 \usage{
-get_iscore(gene, terms_of_interest, is.list = F, max.score = 500)
+get_iscore(gene, terms_of_interest, is.list = F, max.score = 500,
+  verbose = T)
 }
 \arguments{
 \item{gene}{The gene which you want to calculate the iscore for, or a vector with multiple genes}
@@ -25,6 +26,6 @@ database that are a result for that gene AND each term of a list
 gene <- 'CD4'
 terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-get_iscore(gene, terms_of_interest, max.score = 500)
+hm <- get_iscore(gene, terms_of_interest, max.score = 500)
 get_iscore(gene, terms_of_interest, max.score = Inf)
 }
