@@ -16,7 +16,8 @@
 #'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
 #' iscore_list <- get_iscore(gene, terms_of_interest, max.score = 500)
 #' iscore_plot(iscore_list$counts)
-
+require(ggplot2)
+require(plotly)
 
 
 
