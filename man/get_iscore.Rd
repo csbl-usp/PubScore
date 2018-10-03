@@ -26,6 +26,6 @@ database that are a result for that gene AND each term of a list
 gene <- 'CD4'
 terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-hm <- get_iscore(gene, terms_of_interest, max.score = 500)
+get_iscore(gene, terms_of_interest, max.score = 500)
 get_iscore(gene, terms_of_interest, max.score = Inf)
 }

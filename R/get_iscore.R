@@ -17,7 +17,7 @@
 #'gene <- 'CD4'
 #'terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
 #'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#'hm <- get_iscore(gene, terms_of_interest, max.score = 500)
+#' get_iscore(gene, terms_of_interest, max.score = 500)
 #'get_iscore(gene, terms_of_interest, max.score = Inf)
 
 
@@ -35,15 +35,19 @@ get_iscore<- function(gene, terms_of_interest, is.list = F, max.score = 500, ver
     tryCatch(
       s <- entrez_search(db = "pubmed",
                          term = search_topic,
-                         retmax = 3),
+                         retmax = 3,
+                         use_history = T
+                         ),
 
       error=function(e){
         tryCatch(
           print("Query failed, but I'm trying again"),
-          Sys.sleep(1),
+          Sys.sleep(1.2),
           s <- entrez_search(db = "pubmed",
                              term = search_topic,
-                             retmax = 3),
+                             retmax = 3,
+                             use_history = T
+                             ),
 
           error=function(e){
             print("Query failed! Not your lucky day, but I'm trying again")
