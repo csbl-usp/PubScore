@@ -9,21 +9,23 @@
 #'
 #' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance for
 #' @param gene The gene which you want to calculate the iscore for, or a vector with multiple genes
-#' @param max.score A cutoff for maximum numbers of search. Useful for avoiding outlier relations
+#' @param max_score A cutoff for maximum numbers of search. Useful for avoiding outlier relations
 #'  weighting too much. Defaults to 500.
+#' @param wait_time How long should be the interval between two requests to the ENTREZ database.
+#' Defaults to 1. In seconds.
 #' @param is.list If you are searching a single gene or a list of genes. Defaults to false (single gene)
 #' @export
 #' @examples
 #'gene <- 'CD4'
 #'terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
 #'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#'get_iscore(gene, terms_of_interest, max.score = 500)
-#'get_iscore(gene, terms_of_interest, max.score = Inf)
+#'get_iscore(gene, terms_of_interest, max_score = 500)
+#'get_iscore(gene, terms_of_interest, max_score = Inf)
 
 
 
 
-get_iscore<- function(gene, terms_of_interest, is.list = F, max.score = 500, verbose = T){
+get_iscore<- function(gene, terms_of_interest, is.list = F, max_score = 500, verbose = T,wait_time =1){
   require(data.table)
   require(rentrez)
   all_combinations <- expand.grid(gene, terms_of_interest)
@@ -42,7 +44,7 @@ get_iscore<- function(gene, terms_of_interest, is.list = F, max.score = 500, ver
       error=function(e){
         tryCatch(
           print("Query failed, but I'm trying again"),
-          Sys.sleep(1.2),
+          Sys.sleep(wait_time),
           s <- entrez_search(db = "pubmed",
                              term = search_topic,
                              retmax = 3,
@@ -51,7 +53,7 @@ get_iscore<- function(gene, terms_of_interest, is.list = F, max.score = 500, ver
 
           error=function(e){
             print("Query failed! Not your lucky day, but I'm trying again")
-            Sys.sleep(1)
+            Sys.sleep(wait_time)
             s <- entrez_search(db = "pubmed",
                                term = search_topic,
                                retmax = 3)

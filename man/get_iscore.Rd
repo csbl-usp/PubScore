@@ -4,8 +4,8 @@
 \alias{get_iscore}
 \title{get_iscore}
 \usage{
-get_iscore(gene, terms_of_interest, is.list = F, max.score = 500,
-  verbose = T)
+get_iscore(gene, terms_of_interest, is.list = F, max_score = 500,
+  verbose = T, wait_time = 1)
 }
 \arguments{
 \item{gene}{The gene which you want to calculate the iscore for, or a vector with multiple genes}
@@ -14,8 +14,11 @@ get_iscore(gene, terms_of_interest, is.list = F, max.score = 500,
 
 \item{is.list}{If you are searching a single gene or a list of genes. Defaults to false (single gene)}
 
-\item{max.score}{A cutoff for maximum numbers of search. Useful for avoiding outlier relations
+\item{max_score}{A cutoff for maximum numbers of search. Useful for avoiding outlier relations
 weighting too much. Defaults to 500.}
+
+\item{wait_time}{How long should be the interval between two requests to the ENTREZ database.
+Defaults to 1. In seconds.}
 }
 \description{
 Calculates the importance score for a given gene.
@@ -26,6 +29,6 @@ database that are a result for that gene AND each term of a list
 gene <- 'CD4'
 terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-get_iscore(gene, terms_of_interest, max.score = 500)
-get_iscore(gene, terms_of_interest, max.score = Inf)
+get_iscore(gene, terms_of_interest, max_score = 500)
+get_iscore(gene, terms_of_interest, max_score = Inf)
 }

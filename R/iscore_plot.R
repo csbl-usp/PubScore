@@ -16,12 +16,13 @@
 #'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
 #' iscore_list <- get_iscore(gene, terms_of_interest, max.score = 500)
 #' iscore_plot(iscore_list$counts)
-require(ggplot2)
-require(plotly)
+
 
 
 
 iscore_plot <- function(plot_counts, return_ggplot=F, is_plotly = F){
+  require(ggplot2)
+  require(plotly)
   p <-  ggplot(plot_counts, aes(Var1, Var2)) +
     geom_tile(aes(fill = get(colnames(plot_counts)[3])), alpha = 0.6) +
     #   geom_text(aes(label = round(count, 1)))+
