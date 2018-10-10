@@ -1,31 +1,31 @@
 # Pairwise search on pubmed for detection of relevance to a certain topic
 # lubianat 28/09/2018
 
-#' get_iscore
+#' get_literature_score
 #'
 #' Calculates the importance score for a given gene.
 #' The importance score is the total counts of articles in the pubmed
 #' database that are a result for that gene AND each term of a list
 #'
 #' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance for
-#' @param gene The gene which you want to calculate the iscore for, or a vector with multiple genes
+#' @param gene The gene which you want to calculate the literature_score for, or a vector with multiple genes
 #' @param max_score A cutoff for maximum numbers of search. Useful for avoiding outlier relations
 #'  weighting too much. Defaults to 500.
-#' @param wait_time How long should be the interval between two requests to the ENTREZ database.
-#' Defaults to 1. In seconds.
+#' @param wait_time How long should be the interval between two requests to the ENTREZ database when it fails.
+#' Defaults to 0. In seconds.
 #' @param is.list If you are searching a single gene or a list of genes. Defaults to false (single gene)
 #' @export
 #' @examples
 #'gene <- 'CD4'
 #'terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
 #'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#'get_iscore(gene, terms_of_interest, max_score = 500)
-#'get_iscore(gene, terms_of_interest, max_score = Inf)
+#'get_literature_score(gene, terms_of_interest, max_score = 500)
+#'get_literature_score(gene, terms_of_interest, max_score = Inf)
 
 
 
 
-get_iscore<- function(gene, terms_of_interest, is.list = F, max_score = 500, verbose = T,wait_time =1){
+get_literature_score<- function(gene, terms_of_interest, is.list = F, max_score = 500, verbose = T,wait_time =0){
   require(data.table)
   require(rentrez)
   all_combinations <- expand.grid(gene, terms_of_interest)
@@ -62,17 +62,17 @@ get_iscore<- function(gene, terms_of_interest, is.list = F, max_score = 500, ver
       })
     all_combinations$count[index] <- s$count
   }
-  all_combinations$count[all_combinations$count>max.score]<-max.score
+  all_combinations$count[all_combinations$count>max_score]<-max_score
   colnames(all_combinations)[3] <- paste0('counts_', Sys.Date())
   if (!is.list) {
-    gene_iscore <- sum(all_combinations$count)
-    iscore <- list(gene_iscore = gene_iscore, counts = all_combinations)
-    return(iscore)
+    gene_literature_score <- sum(all_combinations$count)
+    literature_score <- list(gene_literature_score = gene_literature_score, counts = all_combinations)
+    return(literature_score)
   }
   if (is.list) {
-    list_iscore <- sum(all_combinations$count)/length(gene)
-    iscore <- list(list_iscore = list_iscore, counts = all_combinations)
-    return(iscore)
+    list_literature_score <- sum(all_combinations$count)/length(gene)
+    literature_score <- list(list_literature_score = list_literature_score, counts = all_combinations)
+    return(literature_score)
 
     return(all_combinations)
   }
