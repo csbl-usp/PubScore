@@ -9,6 +9,8 @@
 #' list output of get_literature_score function
 #' @param return_ggplot If TRUE, returns a ggplot2 object instead of plotting. Defaults to FALSE.
 #' @param is_plotly If TRUE, a interactive plot is plotted in the place o static ggplot. Defaults to FALSE.
+#' @import ggplot2
+#' @import plotly
 #' @export
 #' @examples
 #'gene <- 'CD4'
@@ -21,8 +23,6 @@
 
 
 plot_literature_score <- function(plot_counts, return_ggplot=F, is_plotly = F){
-  require(ggplot2)
-  require(plotly)
   p <-  ggplot(plot_counts, aes(Var1, Var2)) +
     geom_tile(aes(fill = get(colnames(plot_counts)[3])), alpha = 0.6) +
     #   geom_text(aes(label = round(count, 1)))+

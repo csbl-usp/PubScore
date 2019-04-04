@@ -14,6 +14,7 @@
 #' @param wait_time How long should be the interval between two requests to the ENTREZ database when it fails.
 #' Defaults to 0. In seconds.
 #' @param is.list If you are searching a single gene or a list of genes. Defaults to false (single gene)
+#' @import rentrez
 #' @export
 #' @examples
 #'gene <- 'CD4'
