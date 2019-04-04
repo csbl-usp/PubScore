@@ -23,8 +23,9 @@
 
 
 plot_literature_score <- function(plot_counts, return_ggplot=F, is_plotly = F){
-  p <-  ggplot(plot_counts, aes(Var1, Var2)) +
-    geom_tile(aes(fill = get(colnames(plot_counts)[3])), alpha = 0.6) +
+    plot_counts$breaks <- cut(plot_counts[,3], breaks = c(-0.01,0.01,10,50,100,500,Inf),right = FALSE)
+    p <-  ggplot(plot_counts, aes(Var1, Var2)) +
+    geom_tile(aes(fill = breaks, alpha = 0.6)) +
     #   geom_text(aes(label = round(count, 1)))+
     theme(
       panel.background = element_rect(fill = "gray",
@@ -33,7 +34,10 @@ plot_literature_score <- function(plot_counts, return_ggplot=F, is_plotly = F){
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank()
     ) +
-    scale_fill_gradient(low = "white", high = "red")
+      scale_fill_manual(breaks=c("[-.01,.01)", "[.01,10)", "[10,50)",
+                                 "[50,100)", "[100,500)", "[500,Inf)"),
+                        values = c("black", "white", "wheat2",
+                                   "yellow3", " orange", "orangered", 'red4'))
   if (return_ggplot){
     return(p)
   } else{
