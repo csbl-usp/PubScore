@@ -1,6 +1,6 @@
 # lubianat 28/09/2018
 
-#' literature_score_plot
+#' plot_literature_score
 #'
 #' Plots a non-clusterized heatmap of the article counts for the combination of
 #' gene list and list of terms
@@ -15,12 +15,12 @@
 #'terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
 #'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
 #' literature_list <- get_literature_score(gene, terms_of_interest, max.score = 500)
-#' literature_score_plot(literature_score_list$counts)
+#' plot_literature_score(literature_score_list$counts)
 
 
 
 
-literature_score_plot <- function(plot_counts, return_ggplot=F, is_plotly = F){
+plot_literature_score <- function(plot_counts, return_ggplot=F, is_plotly = F){
   require(ggplot2)
   require(plotly)
   p <-  ggplot(plot_counts, aes(Var1, Var2)) +
