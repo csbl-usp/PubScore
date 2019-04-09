@@ -10,7 +10,7 @@
 #' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance for
 #' @param gene The gene which you want to calculate the literature_score for, or a vector with multiple genes
 #' @param max_score A cutoff for maximum numbers of search. Useful for avoiding outlier relations
-#'  weighting too much. Defaults to 500.
+#'  weighting too much. Defaults to Inf.
 #' @param wait_time How long should be the interval between two requests to the ENTREZ database when it fails.
 #' Defaults to 0. In seconds.
 #' @param is.list If you are searching a single gene or a list of genes. Defaults to false (single gene)
@@ -26,7 +26,7 @@
 
 
 
-get_literature_score<- function(gene, terms_of_interest, is.list = F, max_score = 500, verbose = T,wait_time =0){
+get_literature_score<- function(gene, terms_of_interest, is.list = F, max_score = Inf, verbose = T,wait_time =0){
   require(data.table)
   require(rentrez)
   all_combinations <- expand.grid(gene, terms_of_interest)
@@ -41,6 +41,7 @@ get_literature_score<- function(gene, terms_of_interest, is.list = F, max_score 
                          retmax = 3,
                          use_history = T
                          ),
+      all_combinations$count[index] <- s$count,
 
       error=function(e){
         tryCatch(
@@ -51,6 +52,7 @@ get_literature_score<- function(gene, terms_of_interest, is.list = F, max_score 
                              retmax = 3,
                              use_history = T
                              ),
+          all_combinations$count[index] <- s$count,
 
           error=function(e){
             print("Query failed! Not your lucky day, but I'm trying again")
@@ -58,6 +60,7 @@ get_literature_score<- function(gene, terms_of_interest, is.list = F, max_score 
             s <- entrez_search(db = "pubmed",
                                term = search_topic,
                                retmax = 3)
+            all_combinations$count[index] <- s$count
             print("Actually, you are safe. ")
           })
       })

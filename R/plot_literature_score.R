@@ -24,8 +24,9 @@
 
 plot_literature_score <- function(plot_counts, return_ggplot=F, is_plotly = F){
     plot_counts$breaks <- cut(plot_counts[,3], breaks = c(-0.01,0.01,10,50,100,500,Inf),right = FALSE)
-    p <-  ggplot(plot_counts, aes(Var1, Var2)) +
-    geom_tile(aes(fill = breaks, alpha = 0.6)) +
+    plot_counts$number_of_articles <- plot_counts[,3]
+    p <-  ggplot(plot_counts, aes(Var1, Var2, label = number_of_articles)) +
+    geom_tile(aes(fill = breaks)) +
     #   geom_text(aes(label = round(count, 1)))+
     theme(
       panel.background = element_rect(fill = "gray",
