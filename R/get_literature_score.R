@@ -1,3 +1,41 @@
+.query_pubmed <- function (search_topic) {
+  out <- tryCatch({
+    s <- entrez_search(
+      db = "pubmed",
+      term = search_topic,
+      retmax = 1,
+      use_history = T
+    )
+    return(s)
+  },
+
+  error = function(e) {
+    tryCatch({
+      print("Query failed, but I'm trying again")
+      Sys.sleep(wait_time)
+      s <- entrez_search(
+        db = "pubmed",
+        term = search_topic,
+        retmax = 1,
+        use_history = T
+      )
+      return(s)
+
+    },
+
+    error = function(e) {
+      print("Query failed! Not your lucky day, but I'm trying again")
+      Sys.sleep(wait_time)
+      s <- entrez_search(db = "pubmed",
+                         term = search_topic,
+                         retmax = 1)
+      print("Actually, you are safe.")
+      return(s)
+    })
+  })
+  return(out)
+}
+
 # Pairwise search on pubmed for detection of relevance to a certain topic
 # lubianat 28/09/2018
 
@@ -17,68 +55,64 @@
 #' @import rentrez
 #' @export
 #' @examples
-#'gene <- 'CD4'
-#'terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-#'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#'get_literature_score(gene, terms_of_interest, max_score = 500)
-#'get_literature_score(gene, terms_of_interest, max_score = Inf)
-
-
-
-
-get_literature_score<- function(gene, terms_of_interest, is.list = F, max_score = Inf, verbose = T,wait_time =0){
-  require(data.table)
-  require(rentrez)
-  all_combinations <- expand.grid(gene, terms_of_interest)
-  all_combinations$count <- -1
-  for (index in 1:nrow(all_combinations)){
-
-    print(index)
-    search_topic <- paste0(all_combinations$Var1[index], ' AND ', all_combinations$Var2[index])
-    tryCatch(
-      s <- entrez_search(db = "pubmed",
-                         term = search_topic,
-                         retmax = 3,
-                         use_history = T
-                         ),
-      all_combinations$count[index] <- s$count,
-
-      error=function(e){
-        tryCatch(
-          print("Query failed, but I'm trying again"),
-          Sys.sleep(wait_time),
-          s <- entrez_search(db = "pubmed",
-                             term = search_topic,
-                             retmax = 3,
-                             use_history = T
-                             ),
-          all_combinations$count[index] <- s$count,
-
-          error=function(e){
-            print("Query failed! Not your lucky day, but I'm trying again")
-            Sys.sleep(wait_time)
-            s <- entrez_search(db = "pubmed",
-                               term = search_topic,
-                               retmax = 3)
-            all_combinations$count[index] <- s$count
-            print("Actually, you are safe. ")
-          })
-      })
-    all_combinations$count[index] <- s$count
-  }
-  all_combinations$count[all_combinations$count>max_score]<-max_score
-  colnames(all_combinations)[3] <- paste0('counts_', Sys.Date())
-  if (!is.list) {
-    gene_literature_score <- sum(all_combinations$count)
-    literature_score <- list(gene_literature_score = gene_literature_score, counts = all_combinations)
-    return(literature_score)
-  }
-  if (is.list) {
-    list_literature_score <- sum(all_combinations$count)/length(gene)
-    literature_score <- list(list_literature_score = list_literature_score, counts = all_combinations)
-    return(literature_score)
-
-    return(all_combinations)
-  }
-
+gene <- 'CD4'
+terms_of_interest <-
+  c(
+    "CD4 T cell",
+    "CD14+ Monocyte",
+    "B cell",
+    "CD8 T cell",
+    "FCGR3A+ Monocyte",
+    "NK cell",
+    "Dendritic cell",
+    "Megakaryocyte",
+    'immunity'
+  )
+for (i in 1:10) {
+  print(get_literature_score(gene, terms_of_interest, max_score = Inf)$counts)
 }
+get_literature_score(gene, terms_of_interest, max_score = 500)
+get_literature_score(gene, terms_of_interest, max_score = Inf)
+
+
+
+
+get_literature_score <-
+  function(gene,
+           terms_of_interest,
+           is.list = F,
+           max_score = Inf,
+           verbose = T,
+           wait_time = 0) {
+    require(data.table)
+    require(rentrez)
+    all_combinations <- expand.grid(gene, terms_of_interest)
+    all_combinations$count <- -1
+    for (index in 1:nrow(all_combinations)) {
+      print(index)
+      search_topic <-
+        paste0(all_combinations$Var1[index], ' AND ', all_combinations$Var2[index])
+
+      s <- .query_pubmed(search_topic)
+      all_combinations$count[index] <- s$count
+
+      all_combinations$count[all_combinations$count > max_score] <-
+        max_score
+      colnames(all_combinations)[3] <- paste0('counts_', Sys.Date())
+    }
+      if (!is.list) {
+        gene_literature_score <- sum(all_combinations$count)
+        literature_score <-
+          list(gene_literature_score = gene_literature_score, counts = all_combinations)
+        return(literature_score)
+      }
+      if (is.list) {
+        list_literature_score <- sum(all_combinations$count) / length(gene)
+        literature_score <-
+          list(list_literature_score = list_literature_score, counts = all_combinations)
+        return(literature_score)
+
+      }
+
+
+  }
