@@ -1,4 +1,4 @@
-Package: iscore
+Package: PubScore
 Type: Package
 Title: Automatic calculation of literature relevance of genes
 Version: 0.1.0

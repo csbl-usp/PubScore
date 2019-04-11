@@ -5,7 +5,7 @@
 \title{get_literature_score}
 \usage{
 get_literature_score(gene, terms_of_interest, is.list = F,
-  max_score = 500, verbose = T, wait_time = 0)
+  max_score = Inf, verbose = T, wait_time = 0)
 }
 \arguments{
 \item{gene}{The gene which you want to calculate the literature_score for, or a vector with multiple genes}
@@ -15,7 +15,7 @@ get_literature_score(gene, terms_of_interest, is.list = F,
 \item{is.list}{If you are searching a single gene or a list of genes. Defaults to false (single gene)}
 
 \item{max_score}{A cutoff for maximum numbers of search. Useful for avoiding outlier relations
-weighting too much. Defaults to 500.}
+weighting too much. Defaults to Inf.}
 
 \item{wait_time}{How long should be the interval between two requests to the ENTREZ database when it fails.
 Defaults to 0. In seconds.}
@@ -27,8 +27,8 @@ database that are a result for that gene AND each term of a list
 }
 \examples{
 gene <- 'CD4'
-terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-                      "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
+terms_of_interest <-  c("CD4 T cell","CD14+ Monocyte", "B cell", "CD8 T cell",
+"FCGR3A+ Monocyte", "NK cell",  "Dendritic cell",    "Megakaryocyte",    'immunity'  )
 get_literature_score(gene, terms_of_interest, max_score = 500)
 get_literature_score(gene, terms_of_interest, max_score = Inf)
 }

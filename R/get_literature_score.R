@@ -1,4 +1,4 @@
-.query_pubmed <- function (search_topic) {
+.query_pubmed <- function (search_topic, wait_time = 0) {
   out <- tryCatch({
     s <- entrez_search(
       db = "pubmed",
@@ -55,24 +55,11 @@
 #' @import rentrez
 #' @export
 #' @examples
-gene <- 'CD4'
-terms_of_interest <-
-  c(
-    "CD4 T cell",
-    "CD14+ Monocyte",
-    "B cell",
-    "CD8 T cell",
-    "FCGR3A+ Monocyte",
-    "NK cell",
-    "Dendritic cell",
-    "Megakaryocyte",
-    'immunity'
-  )
-for (i in 1:10) {
-  print(get_literature_score(gene, terms_of_interest, max_score = Inf)$counts)
-}
-get_literature_score(gene, terms_of_interest, max_score = 500)
-get_literature_score(gene, terms_of_interest, max_score = Inf)
+#'gene <- 'CD4'
+#' terms_of_interest <-  c("CD4 T cell","CD14+ Monocyte", "B cell", "CD8 T cell",
+#' "FCGR3A+ Monocyte", "NK cell",  "Dendritic cell",    "Megakaryocyte",    'immunity'  )
+#' get_literature_score(gene, terms_of_interest, max_score = 500)
+#' get_literature_score(gene, terms_of_interest, max_score = Inf)
 
 
 
