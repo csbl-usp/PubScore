@@ -53,6 +53,7 @@
 #' Defaults to 0. In seconds.
 #' @param is.list If you are searching a single gene or a list of genes. Defaults to false (single gene)
 #' @import rentrez
+#' @return A dataframe with the literature scores. 
 #' @export
 #' @examples
 #'gene <- 'CD4'

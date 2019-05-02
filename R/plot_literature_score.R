@@ -4,6 +4,8 @@
 #'
 #' Plots a non-clusterized heatmap of the article counts for the combination of
 #' gene list and list of terms
+#' NOTE: the object has to be exactly the one returned by get_literature_score.R . 
+#' Otherwise ggplot2 will not be able to identify the correct columns.
 #'
 #' @param plot_counts The dataframe returned as the second object ($counts) in the
 #' list output of get_literature_score function
@@ -11,6 +13,7 @@
 #' @param is_plotly If TRUE, a interactive plot is plotted in the place o static ggplot. Defaults to FALSE.
 #' @import ggplot2
 #' @import plotly
+#' @return A ploty/ggplot2 object is either returned or directly plotted
 #' @export
 #' @examples
 #'gene <- 'CD4'
