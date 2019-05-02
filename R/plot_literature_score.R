@@ -16,7 +16,7 @@
 #'gene <- 'CD4'
 #'terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
 #'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#' literature_list <- get_literature_score(gene, terms_of_interest, max.score = 500)
+#' literature_list <- get_literature_score(gene, terms_of_interest, max_score = 500)
 #' plot_literature_score(literature_score_list$counts)
 
 
@@ -25,7 +25,7 @@
 plot_literature_score <- function(plot_counts, return_ggplot=F, is_plotly = F){
     plot_counts$breaks <- cut(plot_counts[,3], breaks = c(-0.01,0.01,10,50,100,500,Inf),right = FALSE)
     plot_counts$number_of_articles <- plot_counts[,3]
-    p <-  ggplot(plot_counts, aes(Var1, Var2, label = number_of_articles)) +
+    p <-  ggplot(plot_counts, aes_string(Var1, Var2, label = number_of_articles)) +
     geom_tile(aes(fill = breaks)) +
     #   geom_text(aes(label = round(count, 1)))+
     theme(
@@ -35,10 +35,10 @@ plot_literature_score <- function(plot_counts, return_ggplot=F, is_plotly = F){
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank()
     ) +
-      scale_fill_manual(breaks=c("[-.01,.01)", "[.01,10)", "[10,50)",
+      scale_fill_manual(aes_string(breaks=c("[-.01,.01)", "[.01,10)", "[10,50)",
                                  "[50,100)", "[100,500)", "[500,Inf)"),
                         values = c("black", "white", "wheat2",
-                                   "yellow3", " orange", "orangered", 'red4'))
+                                   "yellow3", " orange", "orangered", 'red4')))
   if (return_ggplot){
     return(p)
   } else{

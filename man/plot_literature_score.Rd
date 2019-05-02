@@ -22,6 +22,6 @@ gene list and list of terms
 gene <- 'CD4'
 terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-literature_list <- get_literature_score(gene, terms_of_interest, max.score = 500)
+literature_list <- get_literature_score(gene, terms_of_interest, max_score = 500)
 plot_literature_score(literature_score_list$counts)
 }

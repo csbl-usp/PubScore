@@ -8,7 +8,7 @@ Authors@R: c(person("Tiago", "Lubiana", email = "tiago.lubiana.alves@usp.br",
 Maintainer: Tiago Lubiana <tiago.lubiana.alves@usp.br>
 Description:  Calculates the importance score for a given gene. The importance score is the total counts of articles in the pubmed database that are a result for that gene AND each term of a list
 Imports: ggplot2, plotly, rentrez
-License: MIT
+License: MIT + LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0

@@ -5,7 +5,7 @@
 \title{get_literature_score}
 \usage{
 get_literature_score(gene, terms_of_interest, is.list = F,
-  max_score = Inf, verbose = T, wait_time = 0)
+  max_score = Inf, wait_time = 0)
 }
 \arguments{
 \item{gene}{The gene which you want to calculate the literature_score for, or a vector with multiple genes}
@@ -29,6 +29,6 @@ database that are a result for that gene AND each term of a list
 gene <- 'CD4'
 terms_of_interest <-  c("CD4 T cell","CD14+ Monocyte", "B cell", "CD8 T cell",
 "FCGR3A+ Monocyte", "NK cell",  "Dendritic cell",    "Megakaryocyte",    'immunity'  )
-get_literature_score(gene, terms_of_interest, max_score = 500)
+get_literature_score(gene, terms_of_interest, 500)
 get_literature_score(gene, terms_of_interest, max_score = Inf)
 }

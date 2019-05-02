@@ -1,6 +1,6 @@
 .query_pubmed <- function (search_topic, wait_time = 0) {
   out <- tryCatch({
-    s <- entrez_search(
+    s <- rentrez::entrez_search(
       db = "pubmed",
       term = search_topic,
       retmax = 1,
@@ -13,7 +13,7 @@
     tryCatch({
       print("Query failed, but I'm trying again")
       Sys.sleep(wait_time)
-      s <- entrez_search(
+      s <- rentrez::entrez_search(
         db = "pubmed",
         term = search_topic,
         retmax = 1,
@@ -26,7 +26,7 @@
     error = function(e) {
       print("Query failed! Not your lucky day, but I'm trying again")
       Sys.sleep(wait_time)
-      s <- entrez_search(db = "pubmed",
+      s <- rentrez::entrez_search(db = "pubmed",
                          term = search_topic,
                          retmax = 1)
       print("Actually, you are safe.")
@@ -58,7 +58,7 @@
 #'gene <- 'CD4'
 #' terms_of_interest <-  c("CD4 T cell","CD14+ Monocyte", "B cell", "CD8 T cell",
 #' "FCGR3A+ Monocyte", "NK cell",  "Dendritic cell",    "Megakaryocyte",    'immunity'  )
-#' get_literature_score(gene, terms_of_interest, max_score = 500)
+#' get_literature_score(gene, terms_of_interest, 500)
 #' get_literature_score(gene, terms_of_interest, max_score = Inf)
 
 
@@ -69,10 +69,7 @@ get_literature_score <-
            terms_of_interest,
            is.list = F,
            max_score = Inf,
-           verbose = T,
            wait_time = 0) {
-    require(data.table)
-    require(rentrez)
     all_combinations <- expand.grid(gene, terms_of_interest)
     all_combinations$count <- -1
     for (index in 1:nrow(all_combinations)) {
