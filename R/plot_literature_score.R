@@ -22,7 +22,7 @@
 
 
 
-plot_literature_score <- function(plot_counts, return_ggplot=F, is_plotly = F){
+plot_literature_score <- function(plot_counts, return_ggplot = FALSE, is_plotly = FALSE){
     plot_counts$breaks <- cut(plot_counts[,3], breaks = c(-0.01,0.01,10,50,100,500,Inf),right = FALSE)
     plot_counts$number_of_articles <- plot_counts[,3]
     p <-  ggplot(plot_counts, aes_string(Var1, Var2, label = number_of_articles)) +

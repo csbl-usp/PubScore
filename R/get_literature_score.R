@@ -4,7 +4,7 @@
       db = "pubmed",
       term = search_topic,
       retmax = 1,
-      use_history = T
+      use_history = TRUE
     )
     return(s)
   },
@@ -17,7 +17,7 @@
         db = "pubmed",
         term = search_topic,
         retmax = 1,
-        use_history = T
+        use_history = TRUE
       )
       return(s)
 
