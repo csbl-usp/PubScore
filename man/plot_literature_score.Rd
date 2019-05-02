@@ -4,7 +4,8 @@
 \alias{plot_literature_score}
 \title{plot_literature_score}
 \usage{
-plot_literature_score(plot_counts, return_ggplot = F, is_plotly = F)
+plot_literature_score(plot_counts, return_ggplot = FALSE,
+  is_plotly = FALSE)
 }
 \arguments{
 \item{plot_counts}{The dataframe returned as the second object ($counts) in the
@@ -14,9 +15,14 @@ list output of get_literature_score function}
 
 \item{is_plotly}{If TRUE, a interactive plot is plotted in the place o static ggplot. Defaults to FALSE.}
 }
+\value{
+A ploty/ggplot2 object is either returned or directly plotted
+}
 \description{
 Plots a non-clusterized heatmap of the article counts for the combination of
 gene list and list of terms
+NOTE: the object has to be exactly the one returned by get_literature_score.R . 
+Otherwise ggplot2 will not be able to identify the correct columns.
 }
 \examples{
 gene <- 'CD4'

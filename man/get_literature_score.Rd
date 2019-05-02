@@ -20,6 +20,9 @@ weighting too much. Defaults to Inf.}
 \item{wait_time}{How long should be the interval between two requests to the ENTREZ database when it fails.
 Defaults to 0. In seconds.}
 }
+\value{
+A dataframe with the literature scores.
+}
 \description{
 Calculates the importance score for a given gene.
 The importance score is the total counts of articles in the pubmed
