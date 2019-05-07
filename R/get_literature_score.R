@@ -68,12 +68,12 @@
 get_literature_score <-
   function(gene,
            terms_of_interest,
-           is.list = F,
+           is.list = FALSE,
            max_score = Inf,
            wait_time = 0) {
     all_combinations <- expand.grid(gene, terms_of_interest)
     all_combinations$count <- -1
-    for (index in 1:nrow(all_combinations)) {
+    for (index in seq_len(nrow(all_combinations))) {
       print(index)
       search_topic <-
         paste0(all_combinations$Var1[index], ' AND ', all_combinations$Var2[index])
