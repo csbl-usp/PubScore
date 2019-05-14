@@ -1,0 +1,77 @@
+
+# Testing the PubScore - P-value by simulation
+
+How can we know if the list of genes that a method spat to us is actually meaningful? 
+
+Let's explore how to calculate a literature score for selected genes, 
+and estimate the likelihood of such a score (or higher) happening by chance. 
+
+We will use the scDengue dataset from the FCBF package and look if the FCBF
+selected genes are already related in the literature to dengue. 
+
+```{r Prepare the data}
+devtools::install_github('lubianat/PubScore')
+library(PubScore)
+library(FCBF)
+
+data("scDengue")
+exprs <- as.data.frame(SummarizedExperiment::assay(scDengue,'logcounts'))
+discrete_expression <- as.data.frame(discretize_exprs(exprs))
+
+infection <- SummarizedExperiment::colData(scDengue)
+target <- infection$infection
+fcbf_features <- fcbf(discrete_expression, target, thresh = 0.05, verbose = TRUE)
+
+total_genes <- rownames(exprs)
+#
+```
+
+
+
+We run FCBF on the scDengue dataset as in FCBF 1.0.1 vignette. 
+The scDengue dataset is with Ensemble IDs, and usually papers use gene symbols. 
+Using biomaRt we can change it.
+
+```{r}
+library(biomaRt)
+
+ensembl = useMart("ensembl",dataset="hsapiens_gene_ensembl")
+reference = getBM(attributes = c('ensembl_gene_id', 'hgnc_symbol'), 
+              mart = ensembl)
+
+total_genes <- reference[reference$ensembl_gene_id %in% total_genes,]$hgnc_symbol
+
+fcbf_genes<- reference[reference$ensembl_gene_id %in% rownames(fcbf_features),]$hgnc_symbol
+```
+
+
+
+
+Now we will run PubScore for all combinations of genes in the dataset + the term "Dengue"
+
+
+
+```{r}
+terms_of_interest <- 'Dengue'
+
+set.seed(2018)
+
+simulation_of_literature_null <- data.frame(2,2,2,2)
+simulation_of_literature_null <- simulation_of_literature_null[-1,]
+
+#getting scores for all genes it can before tomorrow morning
+
+for (i in total_genes){
+  tryCatch({
+   ps_object <- PubScore::get_literature_score(i, terms_of_interest)
+   new_line <- data.frame(i, ps_object$counts)
+   simulation_of_literature_null <- rbind(simulation_of_literature_null, new_line)
+   Sys.sleep(0.2)}, error = function(e){print(e)
+  })
+  
+simulation_of_literature_null <- simulation_of_literature_null[simulation_of_literature_null$i != "",]  
+   
+}
+
+```
+
