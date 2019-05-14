@@ -4,8 +4,9 @@
 \alias{get_literature_score}
 \title{get_literature_score}
 \usage{
-get_literature_score(gene, terms_of_interest, is.list = F,
-  max_score = Inf, wait_time = 0)
+get_literature_score(gene, terms_of_interest, is.list = FALSE,
+  max_score = Inf, wait_time = 0, show_progress = TRUE,
+  verbose = FALSE)
 }
 \arguments{
 \item{gene}{The gene which you want to calculate the literature_score for, or a vector with multiple genes}
@@ -19,6 +20,13 @@ weighting too much. Defaults to Inf.}
 
 \item{wait_time}{How long should be the interval between two requests to the ENTREZ database when it fails.
 Defaults to 0. In seconds.}
+
+\item{show_progress}{If TRUE, a progress bar is displayed. Defaults to True.}
+
+\item{verbose}{If TRUE, will display the index of the search occuring. Defaults to false.}
+}
+\value{
+A dataframe with the literature scores.
 }
 \description{
 Calculates the importance score for a given gene.
@@ -27,8 +35,18 @@ database that are a result for that gene AND each term of a list
 }
 \examples{
 gene <- 'CD4'
-terms_of_interest <-  c("CD4 T cell","CD14+ Monocyte", "B cell", "CD8 T cell",
-"FCGR3A+ Monocyte", "NK cell",  "Dendritic cell",    "Megakaryocyte",    'immunity'  )
+terms_of_interest <-
+  c(
+    "CD4 T cell",
+    "CD14+ Monocyte",
+    "B cell",
+    "CD8 T cell",
+    "FCGR3A+ Monocyte",
+    "NK cell",
+    "Dendritic cell",
+    "Megakaryocyte",
+    'immunity'
+  )
 get_literature_score(gene, terms_of_interest, 500)
 get_literature_score(gene, terms_of_interest, max_score = Inf)
 }
