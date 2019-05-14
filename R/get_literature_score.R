@@ -91,7 +91,9 @@ get_literature_score <-
     # This shows a progress bar to the user.
     pb <-
       progress::progress_bar$new(format = "[:bar] :current/:total (:percent) eta: :eta", total = number_of_combinations)
-    message('Running PubScore:')
+    if(show_progress){
+      message('Running PubScore:')
+    }
     for (index in seq_len(nrow(all_combinations))) {
       if(show_progress){
         pb$tick()
