@@ -76,8 +76,51 @@ for (i in total_genes){
 simulation_of_literature_null <- simulation_of_literature_null[simulation_of_literature_null$i != "",]  
    
 }
+
+PubScoreDB_May_2019 <- data.frame(0,0,0)
+PubScoreDB_May_2019 <- PubScoreDB_May_2019[-1,]
+PubScoreDB_May_2019 <- rbind(PubScoreDB_May_2019, simulation_of_literature_null[,-1])
+saveRDS(PubScoreDB_May_2019, file = "data/PubScoreDB_May_2019.rds")
 ```
 
+Ok, it only worked up to a point. Let's try again, but only with combinations not in the database.
+
+
+```{r}
+
+who_top_infections <- c('Malaria', 'Tuberculosis', 'HIV', 'Hepatitis', 'Dengue', 'Leishmania')
+terms_of_interest <- who_top_infections
+
+# 
+set.seed(2018)
+
+simulation_of_literature_null <- data.frame(2,2,2)
+simulation_of_literature_null <- simulation_of_literature_null[-1,]
+pb <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent) ETA: :eta", total = length(total_genes))
+#getting scores for all genes it can before tomorrow morning
+
+for (i in total_genes){
+  pb$tick()
+  tryCatch({
+    if(any(PubScoreDB_May_2019$Var1 == i & PubScoreDB_May_2019$Var2 %in% terms_of_interest)){
+      
+      adjusted_terms_of_interest <- terms_of_interest[!terms_of_interest %in% PubScoreDB_May_2019[PubScoreDB_May_2019$Var1 == i,]$Var2]
+         ps_object <- PubScore::get_literature_score(i, adjusted_terms_of_interest, show_progress = F)
+
+    }else{
+      
+   ps_object <- PubScore::get_literature_score(i, terms_of_interest, show_progress = F)
+    }
+   new_line <- data.frame(i, ps_object$counts)
+   simulation_of_literature_null <- rbind(simulation_of_literature_null, new_line)
+   Sys.sleep(0.2)}, error = function(e){print(e)
+  })
+  
+simulation_of_literature_null <- simulation_of_literature_null[simulation_of_literature_null$i != "",]  
+}
+
+
+```
 
 
 

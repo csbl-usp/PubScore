@@ -131,7 +131,7 @@ fcbf_score <- fcbf_score[fcbf_score$i != "",]
    
 score <- sum(fcbf_score$count)
 
-print(sum(distribution_of_scores[,1] > score)/length(distribution_of_scores[,1])) 
+print(sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])) 
 ```
 
 So the estimated p-value for association between the FCBF-selected genes and 
