@@ -13,6 +13,7 @@ selected genes are already related in the literature to dengue.
 devtools::install_github('lubianat/PubScore')
 library(PubScore)
 library(FCBF)
+library(progress)
 
 data("scDengue")
 exprs <- as.data.frame(SummarizedExperiment::assay(scDengue,'logcounts'))
@@ -53,17 +54,18 @@ Now we will run PubScore for all combinations of genes in the dataset + the term
 
 ```{r}
 terms_of_interest <- 'Dengue'
-
+# 
 set.seed(2018)
 
-simulation_of_literature_null <- data.frame(2,2,2,2)
+simulation_of_literature_null <- data.frame(2,2,2)
 simulation_of_literature_null <- simulation_of_literature_null[-1,]
-
+pb <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent) ETA: :eta", total = length(total_genes))
 #getting scores for all genes it can before tomorrow morning
 
 for (i in total_genes){
+  pb$tick()
   tryCatch({
-   ps_object <- PubScore::get_literature_score(i, terms_of_interest)
+   ps_object <- PubScore::get_literature_score(i, terms_of_interest, show_progress = F)
    new_line <- data.frame(i, ps_object$counts)
    simulation_of_literature_null <- rbind(simulation_of_literature_null, new_line)
    Sys.sleep(0.2)}, error = function(e){print(e)
@@ -74,4 +76,63 @@ simulation_of_literature_null <- simulation_of_literature_null[simulation_of_lit
 }
 
 ```
+Hooray, after 5 hours we have the reference table. Let's make some simulations. s 
 
+
+```{r}
+genes_to_sample <- length(fcbf_genes[fcbf_genes != ""])
+distribution_of_scores <- c()
+pb2 <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent) ETA: :eta", total = length(total_genes))
+for (i in 1:100000){
+  pb2$tick()
+  list_score <- mean(sample(simulation_of_literature_null$count, genes_to_sample))
+  distribution_of_scores <- c(distribution_of_scores,list_score )
+  
+}
+distribution_of_scores_no_outliers <- data.frame(d =  distribution_of_scores[distribution_of_scores<1000])
+distribution_of_scores<- as.data.frame(distribution_of_scores)
+```
+
+Okay, let's plot it and compare to the FCBF_features score
+
+
+```{r}
+MAX_SCORE = max(distribution_of_scores)
+MIN_SCORE = min(distribution_of_scores)
+library(ggplot2)
+ggplot(distribution_of_scores_no_outliers, aes(x = d))+
+  geom_density() +
+  ggtitle('Density of the distribution of null scores(10^6 resamplings)') +
+  xlab('Average number of counts on PubMed') +
+  ylab('Proportion of gene-lists for each category')
+```
+
+Ok, so, let's see if fcbf-selected features are significantly associated with 'dengue'
+
+```{r}
+
+
+fcbf_score <- data.frame(2,2,2)
+fcbf_score <- fcbf_score[-1,]
+pb3 <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent) ETA: :eta", total = length(fcbf_genes))
+#getting scores for all genes it can before tomorrow morning
+terms_of_interest = 'Dengue'
+for (i in fcbf_genes){
+  pb3$tick()
+  tryCatch({
+   ps_object <- PubScore::get_literature_score(i, terms_of_interest, show_progress = F)
+   new_line <- data.frame(i, ps_object$counts)
+   fcbf_score <- rbind(fcbf_score, new_line)
+   Sys.sleep(0.2)}, error = function(e){print(e)
+  })
+}
+fcbf_score <-fcbf_score[fcbf_score$Var2 == 'Dengue',]
+fcbf_score <- fcbf_score[fcbf_score$i != "",]  
+   
+score <- sum(fcbf_score$count)
+
+print(sum(distribution_of_scores[,1] > score)/length(distribution_of_scores[,1])) 
+```
+
+So the estimated p-value for association between the FCBF-selected genes and 
+the term "Dengue" is 0.016 .

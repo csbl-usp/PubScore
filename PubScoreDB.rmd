@@ -9,3 +9,76 @@ It will accept the output of get_literature_score, provided that it is from the 
 
 PubScoreDB_May_2019
 
+```{r}
+PubScoreDB_May_2019 <- data.frame(0,0,0)
+PubScoreDB_May_2019 <- PubScoreDB_May_2019[-1,]
+saveRDS(PubScoreDB_May_2019, file = "data/PubScoreDB_May_2019.rds")
+```
+
+The genes that will be used to populate the DB are the ones from the scDengue dataset + the ones of pbmc3k dataset.
+
+```{r}
+library(Seurat)
+library(FCBF)
+
+data("scDengue")
+exprs <- as.data.frame(SummarizedExperiment::assay(scDengue,'logcounts'))
+library(biomaRt)
+
+ensembl = useMart("ensembl",dataset="hsapiens_gene_ensembl")
+reference = getBM(attributes = c('ensembl_gene_id', 'hgnc_symbol'), 
+              mart = ensembl)
+
+total_genes <- reference[reference$ensembl_gene_id %in% total_genes,]$hgnc_symbol
+
+# The pbmc3k dataset is available at https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html
+# after running the tutorial, you get the pbmc dataset
+
+load("pbmc_tutorial.rds")
+exprs <- as.data.frame(pbmc@scale.data)
+rm('pbmc')
+
+total_genes <- c(total_genes, rownames(exprs)[!rownames(exprs) %in% PubScoreDB_May_2019$Var1])
+saveRDS(total_genes, file = "data/total_genes.rds")
+
+```
+
+It takes about 5 hours to run a combination of all these genes and a term of interest. 
+So, each night, we can run 2 terms. Hooray. 
+
+I will figure out a way to do it quickly. 
+
+Let's start by the infectious diseases that are HIGHLIGHTED at the World
+Health Organization website( https://www.who.int/topics/infectious_diseases/en/):
+
+malaria, tuberculosis, hiv and hepatitis 
+
+```{r 14 may 2019}
+who_top_infections <- c('Malaria', 'Tuberculosis', 'HIV', 'Hepatitis')
+terms_of_interest <- who_top_infections[1:2]
+# 
+set.seed(2018)
+
+simulation_of_literature_null <- data.frame(2,2,2)
+simulation_of_literature_null <- simulation_of_literature_null[-1,]
+pb <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent) ETA: :eta", total = length(total_genes))
+#getting scores for all genes it can before tomorrow morning
+
+for (i in total_genes){
+  pb$tick()
+  tryCatch({
+   ps_object <- PubScore::get_literature_score(i, terms_of_interest, show_progress = F)
+   new_line <- data.frame(i, ps_object$counts)
+   simulation_of_literature_null <- rbind(simulation_of_literature_null, new_line)
+   Sys.sleep(0.2)}, error = function(e){print(e)
+  })
+  
+simulation_of_literature_null <- simulation_of_literature_null[simulation_of_literature_null$i != "",]  
+   
+}
+```
+
+
+
+
+

@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 PubScore.Rproj
+*.rds
