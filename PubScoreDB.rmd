@@ -1,0 +1,11 @@
+#PubScoreDB
+
+Instead of searching PubMed for gene-term pairs, a few pre-thought terms can be used and
+a database containing only this information, queried. 
+
+The database will have three columns : Gene; Term; and Counts. 
+
+It will accept the output of get_literature_score, provided that it is from the same month.
+
+PubScoreDB_May_2019
+
