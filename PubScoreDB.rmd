@@ -86,7 +86,9 @@ saveRDS(PubScoreDB_May_2019, file = "data/PubScoreDB_May_2019.rds")
 Ok, it only worked up to a point. Let's try again, but only with combinations not in the database.
 
 
-```{r}
+```{r 15 may 2019}
+PubScoreDB_May_2019 <- readRDS('data/PubScoreDB_May_2019.rds')
+total_genes <- readRDS("data/total_genes.rds")
 
 who_top_infections <- c('Malaria', 'Tuberculosis', 'HIV', 'Hepatitis', 'Dengue', 'Leishmania')
 terms_of_interest <- who_top_infections
