@@ -1,0 +1,34 @@
+---
+title: "PubScore"
+author: "Tiago Lubiana"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: readable
+    highlight: tango
+    fig_width: 17
+    fig_height: 10
+    toc: false
+vignette: >
+  %\VignetteIndexEntry{FCBF :  Fast Correlation Based Filter for Feature Selection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = TRUE}
+library(knitr)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+PubScore is an R package with 2 goals :
+- (1) provide a quantitative score of the relevance of a list of genes regarding any topic a
+- (2)  visualize combinations of genes and terms of interest interactively.
+
+Querying the PubMed, PubScore retrieves the number of publications for each gene/term combination. We use this score to calculate the literature enrichment for a list of genes (averaging the hits for all gene x term combination) and to estimate a p-value for the likelihood of obtaining a score as high by chance. The output of the PubMed searches is a table containing all gene-term association scores. An interactive heatmap enables us to identify both landmark genes (high scores) and new associations (low/medium scores). We can quickly identify partners and their relation hovering with the mouse over the plot.
+
+

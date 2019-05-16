@@ -1,0 +1,131 @@
+.query_pubmed <- function (search_topic, wait_time = 0) {
+  out <- tryCatch({
+    s <- rentrez::entrez_search(
+      db = "pubmed",
+      term = search_topic,
+      retmax = 1,
+      use_history = TRUE
+    )
+    return(s)
+  },
+  
+  error = function(e) {
+    tryCatch({
+      print("Query failed, but I'm trying again")
+      Sys.sleep(wait_time)
+      s <- rentrez::entrez_search(
+        db = "pubmed",
+        term = search_topic,
+        retmax = 1,
+        use_history = TRUE
+      )
+      return(s)
+      
+    },
+    
+    error = function(e) {
+      print("Query failed! Not your lucky day, but I'm trying again")
+      Sys.sleep(wait_time)
+      s <- rentrez::entrez_search(db = "pubmed",
+                                  term = search_topic,
+                                  retmax = 1)
+      print("Actually, you are safe.")
+      return(s)
+    })
+  })
+  return(out)
+}
+
+# Pairwise search on pubmed for detection of relevance to a certain topic
+# lubianat 28/09/2018
+
+#' get_literature_score
+#'
+#' Calculates the importance score for a given gene.
+#' The importance score is the total counts of articles in the pubmed
+#' database that are a result for that gene AND each term of a list
+#'
+#' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance for
+#' @param gene The gene which you want to calculate the literature_score for, or a vector with multiple genes
+#' @param max_score A cutoff for maximum numbers of search. Useful for avoiding outlier relations
+#'  weighting too much. Defaults to Inf.
+#' @param wait_time How long should be the interval between two requests to the ENTREZ database when it fails.
+#' Defaults to 0. In seconds.
+#' @param is.list If you are searching a single gene or a list of genes. Defaults to false (single gene)
+#' @param show_progress If TRUE, a progress bar is displayed. Defaults to True.
+#' @param verbose If TRUE, will display the index of the search occuring. Defaults to false.
+#' @import rentrez
+#' @import progress
+#' @return A dataframe with the literature scores.
+#' @export
+#' @examples
+#'   gene <- 'CD4'
+#'   terms_of_interest <-
+#'     c(
+#'       "CD4 T cell",
+#'       "CD14+ Monocyte",
+#'       "B cell",
+#'       "CD8 T cell",
+#'       "FCGR3A+ Monocyte",
+#'       "NK cell",
+#'       "Dendritic cell",
+#'       "Megakaryocyte",
+#'       'immunity'
+#'     )
+#'   get_literature_score(gene, terms_of_interest, max_score = 500)
+#'   get_literature_score(gene, terms_of_interest, max_score = Inf)
+
+
+
+get_literature_score <-
+  function(gene,
+           terms_of_interest,
+           is.list = FALSE,
+           max_score = Inf,
+           wait_time = 0,
+           show_progress = TRUE,
+           verbose = FALSE) {
+    all_combinations <- expand.grid(gene, terms_of_interest)
+    all_combinations$count <- -1
+    number_of_combinations <- nrow(all_combinations)
+    # This shows a progress bar to the user.
+    pb <-
+      progress::progress_bar$new(format = "[:bar] :current/:total (:percent) eta: :eta", total = number_of_combinations)
+    if(show_progress){
+      message('Running PubScore:')
+    }
+    for (index in seq_len(nrow(all_combinations))) {
+      if(show_progress){
+        pb$tick()
+      }
+      if (verbose) {
+        print(index)
+      }
+      search_topic <-
+        paste0(all_combinations$Var1[index], ' AND ', all_combinations$Var2[index])
+      
+      s <- .query_pubmed(search_topic)
+      all_combinations$count[index] <- s$count
+      
+      all_combinations$count[all_combinations$count > max_score] <-
+        max_score
+    }
+    if (!is.list) {
+      gene_literature_score <- sum(all_combinations$count)
+      literature_score <-
+        list(gene_literature_score = gene_literature_score, counts = all_combinations)
+      return(literature_score)
+    }
+    if (is.list) {
+      list_literature_score <- sum(all_combinations$count) / length(gene)
+      literature_score <-
+        list(list_literature_score = list_literature_score, 
+             counts = all_combinations,
+             date = Sys.Date(),
+             max_score = max_score)
+      return(literature_score)
+      
+    }
+    
+    
+  }
