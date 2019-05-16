@@ -37,11 +37,7 @@ Using biomaRt we can change it.
 library(biomaRt)
 
 ensembl = useMart("ensembl",dataset="hsapiens_gene_ensembl")
-<<<<<<< HEAD
 reference = biomaRt::getBM(attributes = c('ensembl_gene_id', 'hgnc_symbol'), 
-=======
-reference = getBM(attributes = c('ensembl_gene_id', 'hgnc_symbol'), 
->>>>>>> 74ddba89b286f0be814b014b9883e72e95969f19
               mart = ensembl)
 
 total_genes <- reference[reference$ensembl_gene_id %in% total_genes,]$hgnc_symbol
@@ -79,12 +75,9 @@ simulation_of_literature_null <- simulation_of_literature_null[simulation_of_lit
    
 }
 
-<<<<<<< HEAD
 simulation_of_literature_null <- readRDS('data/PubScoreDB_May_2019.rds')
 simulation_of_literature_null<- simulation_of_literature_null[simulation_of_literature_null$Var2=='Dengue', ]
 
-=======
->>>>>>> 74ddba89b286f0be814b014b9883e72e95969f19
 ```
 Hooray, after 5 hours we have the reference table. Let's make some simulations. s 
 
@@ -92,21 +85,12 @@ Hooray, after 5 hours we have the reference table. Let's make some simulations. 
 ```{r}
 genes_to_sample <- length(fcbf_genes[fcbf_genes != ""])
 distribution_of_scores <- c()
-<<<<<<< HEAD
-pb2 <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent) ETA: :eta", total = 100000)
 for (i in 1:100000){
         genes_to_sample_now <- sample(total_genes, genes_to_sample)
         simu_now <- simulation_of_literature_null[simulation_of_literature_null$Var1 %in% genes_to_sample_now,]$count
         list_score <- sum(simu_now) / genes_to_sample
         distribution_of_scores <- c(distribution_of_scores,list_score )
-=======
-pb2 <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent) ETA: :eta", total = length(total_genes))
-for (i in 1:100000){
->>>>>>> 74ddba89b286f0be814b014b9883e72e95969f19
-  pb2$tick()
-  list_score <- mean(sample(simulation_of_literature_null$count, genes_to_sample))
-  distribution_of_scores <- c(distribution_of_scores,list_score )
-  
+
 }
 distribution_of_scores_no_outliers <- data.frame(d =  distribution_of_scores[distribution_of_scores<1000])
 distribution_of_scores<- as.data.frame(distribution_of_scores)

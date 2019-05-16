@@ -19,7 +19,6 @@
 #' @return A dataframe with the literature scores.
 #' @export
 #' @examples
-<<<<<<< HEAD
 #'    genes <- c('CD4','CD8')
 #'    terms_of_interest <-
 #'      c(
@@ -36,24 +35,6 @@
 #'  literature_object <- PubScore::get_literature_score(gene, terms_of_interest, 500)
 #'  total_genes <- c('CD4', 'CD8','CD7','ASDASD','ADSFASD','ADSFASDS', 'asdas')
 #'  literature_object <- test_literature_score(literature_object, total_genes)
-=======
-  gene <- 'CD4'
-  terms_of_interest <-
-    c(
-      "CD4 T cell",
-      "CD14+ Monocyte",
-      "B cell",
-      "CD8 T cell",
-      "FCGR3A+ Monocyte",
-      "NK cell",
-      "Dendritic cell",
-      "Megakaryocyte",
-      'immunity'
-    )
-literature_object <- PubScore::get_literature_score(gene, terms_of_interest, 500)
-total_genes <- c('CD4', 'CD8','CD7','ASDASD','ADSFASD','ADSFASDS', 'asdas')
-test_literature_score(literature_object, total_genes)
->>>>>>> 74ddba89b286f0be814b014b9883e72e95969f19
 
 test_literature_score <-
   function(literature_object,
@@ -65,19 +46,11 @@ test_literature_score <-
     
     simulation_of_literature_null <- data.frame(2,2,2)
     simulation_of_literature_null <- simulation_of_literature_null[-1,]
-<<<<<<< HEAD
-    pb_test_score <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent) ETA: :eta", total = length(total_genes))
-    #getting scores for all genes it can before tomorrow morning
+
     message('Running PubScore for all genes. Might take a while!')
     for (i in total_genes){
       pb_test_score$tick()
-=======
-    pb <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent) ETA: :eta", total = length(total_genes))
-    #getting scores for all genes it can before tomorrow morning
-    
-    for (i in total_genes){
-      pb$tick()
->>>>>>> 74ddba89b286f0be814b014b9883e72e95969f19
+
       tryCatch({
         ps_object <- PubScore::get_literature_score(i, terms_of_interest, 
                                                     max_score =  literature_object$max_score,
@@ -89,16 +62,9 @@ test_literature_score <-
     }
       simulation_of_literature_null <- simulation_of_literature_null[simulation_of_literature_null$i != "",]  
       
-<<<<<<< HEAD
       message('Running 100000 simulations')
       distribution_of_scores <- c()
       for (i in 1:100000){    
-
-=======
-
-      distribution_of_scores <- c()
-      for (i in 1:100000){
->>>>>>> 74ddba89b286f0be814b014b9883e72e95969f19
         genes_to_sample_now <- sample(total_genes, genes_to_sample)
         simu_now <- simulation_of_literature_null[simulation_of_literature_null$Var1 %in% genes_to_sample_now,]$count
         list_score <- sum(simu_now) / genes_to_sample
@@ -119,7 +85,7 @@ test_literature_score <-
       
       score <- literature_object$list_literature_score
       
-<<<<<<< HEAD
+
       pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])
     
     
@@ -130,15 +96,6 @@ test_literature_score <-
     obj[['p_value']] = pvalue
     tested_score <- obj
     return(tested_score)
-=======
-    
-    
-    
-    print('The p-value is:')
-    print(sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])) 
-    
-    
->>>>>>> 74ddba89b286f0be814b014b9883e72e95969f19
-    
+
     
   }
