@@ -39,6 +39,7 @@ exprs <- as.data.frame(pbmc@scale.data)
 rm('pbmc')
 
 total_genes <- c(total_genes, rownames(exprs))
+
 saveRDS(total_genes, file = "data/total_genes.rds")
 
 ```
@@ -123,6 +124,7 @@ simulation_of_literature_null <- simulation_of_literature_null[simulation_of_lit
 
 PubScoreDB_May_2019 <- rbind(PubScoreDB_May_2019, simulation_of_literature_null[,-1])
 saveRDS(PubScoreDB_May_2019, file = "data/PubScoreDB_May_2019.rds")
+
 ```
 
 
