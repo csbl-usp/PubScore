@@ -59,21 +59,21 @@
 #' @return A dataframe with the literature scores.
 #' @export
 #' @examples
-#'   gene <- 'CD4'
-#'   terms_of_interest <-
-#'     c(
-#'       "CD4 T cell",
-#'       "CD14+ Monocyte",
-#'       "B cell",
-#'       "CD8 T cell",
-#'       "FCGR3A+ Monocyte",
-#'       "NK cell",
-#'       "Dendritic cell",
-#'       "Megakaryocyte",
-#'       'immunity'
-#'     )
-#'   get_literature_score(gene, terms_of_interest, max_score = 500)
-#'   get_literature_score(gene, terms_of_interest, max_score = Inf)
+   gene <- 'CD4'
+   terms_of_interest <-
+     c(
+       "CD4 T cell",
+       "CD14+ Monocyte",
+       "B cell",
+       "CD8 T cell",
+       "FCGR3A+ Monocyte",
+       "NK cell",
+       "Dendritic cell",
+       "Megakaryocyte",
+       'immunity'
+     )
+   get_literature_score(gene, terms_of_interest, max_score = 500)
+   get_literature_score(gene, terms_of_interest, max_score = Inf)
 
 
 
@@ -87,6 +87,7 @@ get_literature_score <-
            verbose = FALSE) {
     all_combinations <- expand.grid(gene, terms_of_interest)
     all_combinations$count <- -1
+    colnames(all_combinations)<- c('Gene', 'Topic', 'count')
     number_of_combinations <- nrow(all_combinations)
     # This shows a progress bar to the user.
     pb <-
@@ -102,7 +103,7 @@ get_literature_score <-
         print(index)
       }
       search_topic <-
-        paste0(all_combinations$Var1[index], ' AND ', all_combinations$Var2[index])
+        paste0(all_combinations$Gene[index], ' AND ', all_combinations$Topic[index])
       
       s <- .query_pubmed(search_topic)
       all_combinations$count[index] <- s$count
@@ -113,7 +114,8 @@ get_literature_score <-
     if (!is.list) {
       gene_literature_score <- sum(all_combinations$count)
       literature_score <-
-        list(gene_literature_score = gene_literature_score, counts = all_combinations)
+        list(gene_literature_score = gene_literature_score, counts = all_combinations,              date = Sys.Date(),
+             max_score = max_score)
       return(literature_score)
     }
     if (is.list) {

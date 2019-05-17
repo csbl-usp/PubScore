@@ -41,8 +41,8 @@ test_literature_score <-
            total_genes,
            show_progress = TRUE,
            verbose = FALSE) {
-    terms_of_interest <- levels(literature_object$counts$Var2)
-    genes_to_sample <- length(levels(literature_object$counts$Var1))
+    terms_of_interest <- levels(literature_object$counts$Topic)
+    genes_to_sample <- length(levels(literature_object$counts$Gene))
     
     simulation_of_literature_null <- data.frame(2,2,2)
     simulation_of_literature_null <- simulation_of_literature_null[-1,]
