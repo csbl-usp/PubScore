@@ -16,20 +16,24 @@
 #' @return A ploty/ggplot2 object is either returned or directly plotted
 #' @export
 #' @examples
-#'gene <- 'CD4'
-#'terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-#'                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#' literature_list <- get_literature_score(gene, terms_of_interest, max_score = 500)
-#' plot_literature_score(literature_score_list$counts)
-
+#' gene <- c('CD4','CD14')
+#' terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
+#'                        "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
+#'  literature_list <- PubScore::get_literature_score(gene, terms_of_interest, max_score = 500)
+#'  P <-plot_literature_score(literature_list$counts, return_ggplot = T)
+#' plotly::ggplotly(P)
 
 
 
 plot_literature_score <- function(plot_counts, return_ggplot = FALSE, is_plotly = FALSE){
-    plot_counts$breaks <- cut(plot_counts[,3], breaks = c(-0.01,0.01,10,50,100,500,Inf),right = FALSE)
+    plot_counts$breaks <- cut(plot_counts[,3], breaks = c(-0.01,0.01,10,50,100,500,Inf),right = FALSE, )
+    breaks=c("[-0.01,0.01)", "[0.01,10)", "[10,50)",
+             "[50,100)", "[100,500)", "[500,Inf)")
+    labels = c("0", "1-10", "11-50","51-100","100-500","500+")
+    plot_counts$labels <- labels[match(plot_counts$breaks, breaks)]
     plot_counts$number_of_articles <- plot_counts[,3]
     p <-  ggplot(plot_counts, aes(Var1, Var2, label = number_of_articles)) +
-    geom_tile(aes(fill = breaks)) +
+    geom_tile(aes(fill = labels)) +
     theme(
       panel.background = element_rect(fill = "gray",
                                       colour = "gray",
@@ -39,8 +43,10 @@ plot_literature_score <- function(plot_counts, return_ggplot = FALSE, is_plotly 
     ) +
       scale_fill_manual(breaks=c("[-.01,.01)", "[.01,10)", "[10,50)",
                                  "[50,100)", "[100,500)", "[500,Inf)"),
-                        values = c("black", "white", "wheat2",
-                                   "yellow3", " orange", "orangered", 'red4'))
+                        values = c("0" ="black", "1-10" = "wheat2",
+                                   "11-50" = "yellow3", "51-100" =" orange", "100-500" = "orangered", "500+" ='red4'),
+                          name = "Article counts", labels = c("0", "1-10", "11-50","51-100","100-500","500+")) +
+      labs(fill = "Article counts")
   if (return_ggplot){
     return(p)
   } else{
