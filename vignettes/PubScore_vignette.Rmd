@@ -29,6 +29,159 @@ PubScore is an R package with 2 goals :
 - (1) provide a quantitative score of the relevance of a list of genes regarding any topic a
 - (2)  visualize combinations of genes and terms of interest interactively.
 
-Querying the PubMed, PubScore retrieves the number of publications for each gene/term combination. We use this score to calculate the literature enrichment for a list of genes (averaging the hits for all gene x term combination) and to estimate a p-value for the likelihood of obtaining a score as high by chance. The output of the PubMed searches is a table containing all gene-term association scores. An interactive heatmap enables us to identify both landmark genes (high scores) and new associations (low/medium scores). We can quickly identify partners and their relation hovering with the mouse over the plot.
+Querying the PubMed, PubScore gets the article count for  gene/term combination and creates a  score to calculate the literature enrichment for a list of genes.
+
+
+Let's start by installing the package. 
+
+
+Let's explore how to calculate a literature score for selected genes, 
+and estimate the likelihood of such a score (or higher) happening by chance. 
+
+We will use the scDengue dataset, of dengue-infected monocytes, from the FCBF package. 
+We will see the FCBF selected genes are already related in the literature to dengue. 
+
+```{r}
+BiocManager::install("PubScore")
+
+library("FCBF")
+library('SummarizedExperiment')
+library(PubScore)
+# load expression data
+data(scDengue)
+```
+
+Let's run the FCBF algorithm to select genes that might be relevant 
+to understand
+
+
+```{r}
+infection <- SummarizedExperiment::colData(scDengue)
+target <- infection$infection
+
+exprs <- as.data.frame(SummarizedExperiment::assay(scDengue,'logcounts'))
+discrete_expression <- as.data.frame(FCBF::discretize_exprs(exprs))
+
+fcbf_features <- fcbf(discrete_expression, target, thresh = 0.05, verbose = FALSE)
+total_features <- rownames(exprs)
+head(fcbf_features)
+```
+
+
+
+The scDengue dataset is using Ensemble IDs, and usually papers use gene symbols 
+(as TP53 and CD3D). biomaRt can fix this. 
+
+```{r}
+library(biomaRt)
+
+ensembl = useMart("ensembl",dataset="hsapiens_gene_ensembl")
+reference = biomaRt::getBM(attributes = c('ensembl_gene_id', 'hgnc_symbol'), 
+              mart = ensembl)
+
+total_genes <- reference[reference$ensembl_gene_id %in% total_features,]$hgnc_symbol
+
+fcbf_genes<- reference[reference$ensembl_gene_id %in% rownames(fcbf_features),]$hgnc_symbol
+```
+
+Unfortunately, not all genes in the datasets had an equivalent gene symbol.
+PubScore does not deal with empty gene-names, so we need to remove them
+
+```{r}
+total_genes <- total_genes[total_genes != ""]
+fcbf_genes <- fcbf_genes[fcbf_genes != ""]
+```
+
+
+First let's see the association of the fcbf_genes with dengue-related terms.
+The PubScore package queries the PubMed database, so it takes about 0.7s for 
+each search. 
+
+As we have 62 genes and 2 terms, 62 * 0.7 = 43.8 s, the function should
+take less than a  minute to run.
+
+```{r}
+terms_of_interest <- c('Dengue')
+
+literature_object <- PubScore::get_literature_score(gene = fcbf_genes,is.list = T,terms_of_interest = terms_of_interest)
+
+```
+
+With the literature object, now we can visualize the gene-term relationships 
+with the plot_literature_score function. 
+
+```{r}
+
+library(ggplot2)
+p <- plot_literature_score(plot_counts = literature_object$counts, return_ggplot = T)
+library(plotly)
+ggplotly(p)
+```
+
+
+There are a few genes that have been related to dengue previously, such as MAVS. There is a Nature Immunology research highligh entitled "Dengue suppresses MAVS". 
+(www.nature.com/articles/ni.3527)
+
+Qualitatetively, it seems that indeed some of these genes are already related to Dengue. 
+But how many Dengue-related genes would I expect by chance alone?
+
+For this, we need to estimate the null distribution of the scores by randomly selecting
+genes. That is the goal of the 'test_literature_score' function. 
+
+WARNING: This functions takes 6 hours to run. That is because a lot of requests are made to
+pubmed. We ran it and made the final output available here so you don't need it. 
+But feel free to do it. 
+
+```{r eval = FALSE} 
+literature_object <- test_literature_score(literature_object, total_genes)
+save(literature_object, file= '../literature_object.RData')
+load('../literature_object.RData')
+
+literature_object$all_gene_combinations <- literature_object$all_gene_combinations[literature_object$all_gene_combinations$Var2 == 'Dengue',]
+```
+
+
+We will re-do the p-value estimation just to be really clear about it. 
+```{r}
+simulation_of_literature_null <- literature_object$all_gene_combinations
+
+message('Running 100000 simulations')
+      distribution_of_scores <- c()
+      for (i in seq_len(100000)){    
+        genes_to_sample_now <- sample(total_genes, 62)
+        simu_now <- simulation_of_literature_null[simulation_of_literature_null$Var1 %in% genes_to_sample_now,]$count
+        list_score <- sum(simu_now) / 62
+        distribution_of_scores <- c(distribution_of_scores,list_score )
+        
+      }
+      
+      distribution_of_scores<- data.frame(d = distribution_of_scores)
+      
+```
+
+Hm, the pvalue indicates that the list of genes obtained is not more related 
+to Dengue than what we would expect by chance. This might be a sign that FCBF
+did not work very well for this discretization/dataset. Or that the information 
+regarding the association of these genes to Dengue  is largely  absent from the 
+literature.
+
+Let's look at the top genes associated with Dengue in the literature.
+
+
+```{r}
+literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]
+```
+
+
+Hm there are clearly problems with these genes... they are ambiguous!
+We will have to blacklist a few genes to avoid these outliers. 
+
+Genes blacklisted :
+
+
+```{r}
+literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Var1[1:20]
+black_list <- c('ACHE', 'PC', )
+```
 
 

@@ -48,13 +48,16 @@ test_literature_score <-
     simulation_of_literature_null <- simulation_of_literature_null[-1,]
 
     message('Running PubScore for all genes. Might take a while!')
+    pb_test_score <-
+      progress::progress_bar$new(format = "[:bar] :current/:total (:percent) eta: :eta", total = length(total_genes))
+    
     for (i in total_genes){
       pb_test_score$tick()
 
       tryCatch({
         ps_object <- PubScore::get_literature_score(i, terms_of_interest, 
                                                     max_score =  literature_object$max_score,
-                                                    show_progress = F)
+                                                    show_progress = FALSE)
         new_line <- data.frame(i, ps_object$counts)
         simulation_of_literature_null <- rbind(simulation_of_literature_null, new_line)
         Sys.sleep(0.2)}, error = function(e){print(e)
@@ -64,7 +67,7 @@ test_literature_score <-
       
       message('Running 100000 simulations')
       distribution_of_scores <- c()
-      for (i in 1:100000){    
+      for (i in seq_len(100000)){    
         genes_to_sample_now <- sample(total_genes, genes_to_sample)
         simu_now <- simulation_of_literature_null[simulation_of_literature_null$Var1 %in% genes_to_sample_now,]$count
         list_score <- sum(simu_now) / genes_to_sample

@@ -28,9 +28,8 @@
 plot_literature_score <- function(plot_counts, return_ggplot = FALSE, is_plotly = FALSE){
     plot_counts$breaks <- cut(plot_counts[,3], breaks = c(-0.01,0.01,10,50,100,500,Inf),right = FALSE)
     plot_counts$number_of_articles <- plot_counts[,3]
-    p <-  ggplot(plot_counts, aes_string(Var1, Var2, label = number_of_articles)) +
+    p <-  ggplot(plot_counts, aes(Var1, Var2, label = number_of_articles)) +
     geom_tile(aes(fill = breaks)) +
-    #   geom_text(aes(label = round(count, 1)))+
     theme(
       panel.background = element_rect(fill = "gray",
                                       colour = "gray",
@@ -38,15 +37,15 @@ plot_literature_score <- function(plot_counts, return_ggplot = FALSE, is_plotly 
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank()
     ) +
-      scale_fill_manual(aes_string(breaks=c("[-.01,.01)", "[.01,10)", "[10,50)",
+      scale_fill_manual(breaks=c("[-.01,.01)", "[.01,10)", "[10,50)",
                                  "[50,100)", "[100,500)", "[500,Inf)"),
                         values = c("black", "white", "wheat2",
-                                   "yellow3", " orange", "orangered", 'red4')))
+                                   "yellow3", " orange", "orangered", 'red4'))
   if (return_ggplot){
     return(p)
   } else{
   if (is_plotly){
-    ggplotly(p)
+    plotly::ggplotly(p)
   }
   if (!is_plotly){
     plot(p)
