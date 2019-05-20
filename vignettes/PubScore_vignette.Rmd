@@ -149,13 +149,22 @@ message('Running 100000 simulations')
       distribution_of_scores <- c()
       for (i in seq_len(100000)){    
         genes_to_sample_now <- sample(total_genes, 62)
-        simu_now <- simulation_of_literature_null[simulation_of_literature_null$Var1 %in% genes_to_sample_now,]$count
+        simu_now <- simulation_of_literature_null[simulation_of_literature_null$Gene %in% genes_to_sample_now,]$count
         list_score <- sum(simu_now) / 62
         distribution_of_scores <- c(distribution_of_scores,list_score )
         
       }
       
       distribution_of_scores<- data.frame(d = distribution_of_scores)
+      
+score <- literature_object$list_literature_score
+      
+
+  pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])
+    
+    
+    print('The p-value by simulation is:')
+    print(pvalue) 
       
 ```
 
@@ -169,7 +178,7 @@ Let's look at the top genes associated with Dengue in the literature.
 
 
 ```{r}
-literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]
+literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),][1:20]
 ```
 
 
@@ -180,8 +189,154 @@ Genes blacklisted :
 
 
 ```{r}
-literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Var1[1:20]
-black_list <- c('ACHE', 'PC', )
+literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[1:20]
+black_list <-
+  c(
+  "PC",
+  "JUN" ,
+  "IMPACT",
+  "ACHE",
+  "SRI" ,
+  "SET"  ,
+  "CS" ,
+  "PROC"   ,
+  "MET" ,
+  "SHE"   ,
+  "CAD"  ,
+  "DDT",
+  "PIGS"   ,
+  "SARS" ,
+  "REST" ,
+  "GC",
+  "CP",
+  "STAR",
+  "SI"
+  )
 ```
 
+From the first 20, only 'HLA-A' seems like a true positive. Let's look further.
+
+
+```{r}
+literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[21:40]
+
+black_list <-
+  c( black_list,
+  "GAN",
+  "MARS" ,
+  "SDS",
+  "AGA",
+  "NHS" ,
+  "CPE"  ,
+  "POR" ,
+  "MAX"   ,
+  "CAT" ,
+  "LUM"   ,
+  "ANG"  ,
+  "POLE",
+  "CLOCK"
+  )
+```
+
+More fakers. Let's keep digging.
+
+
+```{r}
+literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[41:60]
+
+black_list <-
+  c( black_list,
+  "TANK",
+  "ITCH" ,
+  "SDS",
+  "AES",
+  "CIC" ,
+  "FST"  ,
+  "CAPS" ,
+  "COPE"   ,
+  "F2" ,
+  "AFM"    ,
+  "SPR"  ,
+  "PALM",
+  "C2"
+  )
+```
+
+More fakers. Let's keep digging.
+
+
+```{r}
+literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[61:80]
+
+black_list <-
+  c( black_list,
+  "BAD",
+  "GPI" ,
+  "CA2",
+  "SMS",
+  "INVS" ,
+  "WARS"  ,
+  "HP" ,
+  "GAL"   ,
+  "SON" ,
+  "AFM"
+  )
+```
+
+More fakers. Let's keep digging.
+
+
+```{r}
+literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[81:100]
+
+black_list <-
+  c( black_list,
+  "BORA",
+  "MBP" ,
+  "MAK",
+  "MALL",
+  "COIL" ,
+  "CAST " 
+  )
+save(black_list,file = 'blacklist.RData')
+
+```
+
+Let's see if there are any blacklisted genes in the FCBF-selected ones. 
+
+```{r}
+any(fcbf_genes %in% black_list)
+```
+
+Uhul, there aren't any! Let's try the simulation again. 
+
+
+```{r}
+simulation_of_literature_null <- literature_object$all_gene_combinations[!literature_object$all_gene_combinations$Gene %in% black_list,]
+
+message('Running 100000 simulations')
+      distribution_of_scores <- c()
+      for (i in seq_len(100000)){    
+        genes_to_sample_now <- sample(total_genes, 62)
+        simu_now <- simulation_of_literature_null[simulation_of_literature_null$Gene %in% genes_to_sample_now,]$count
+        list_score <- sum(simu_now) / 62
+        distribution_of_scores <- c(distribution_of_scores,list_score )
+        
+      }
+      
+      distribution_of_scores<- data.frame(d = distribution_of_scores)
+      
+score <- literature_object$list_literature_score
+      
+
+  pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])
+    
+    
+    print('The p-value by simulation is:')
+    print(pvalue) 
+```
+
+0.11197. Ok, it is a higher score than expected by random in 88% of the cases. It is not that bad. 
+The threshold of 95% is rather arbitrary and there is a big movement to reject the hard 
+definition of statistical significance. 
 
