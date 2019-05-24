@@ -13,6 +13,7 @@
 #' @param is_plotly If TRUE, a interactive plot is plotted in the place o static ggplot. Defaults to FALSE.
 #' @import ggplot2
 #' @import plotly
+#' @import graphics
 #' @return A ploty/ggplot2 object is either returned or directly plotted
 #' @export
 #' @examples
@@ -20,7 +21,7 @@
 #' terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
 #'                        "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
 #'  literature_list <- PubScore::get_literature_score(gene, terms_of_interest, max_score = 500)
-#'  P <-plot_literature_score(literature_list$counts, return_ggplot = T)
+#'  P <-plot_literature_score(literature_list$counts, return_ggplot = TRUE)
 #' plotly::ggplotly(P)
 
 

@@ -109,10 +109,10 @@ After getting the literature object from the get_literature score function,  we 
 ```{r}
 terms_of_interest <- c('Dengue')
 
-literature_object <- PubScore::get_literature_score(gene = fcbf_genes,is.list = T,terms_of_interest = terms_of_interest)
+literature_object <- PubScore::get_literature_score(gene = fcbf_genes,is.list = TRUE,terms_of_interest = terms_of_interest)
 library(ggplot2)
 
-p <- plot_literature_score(plot_counts = literature_object$counts, return_ggplot = T)
+p <- plot_literature_score(plot_counts = literature_object$counts, return_ggplot = TRUE)
 library(plotly)
 ggplotly(p)
 ```
@@ -134,11 +134,11 @@ WARNING: This functions takes 6 hours to run. That is because a lot of requests 
 pubmed. We ran it and made the final output available here so you don't need it. 
 It is commented out of the code because of that, but feel free to run it. 
 
-```{r eval = FALSE} 
+```{r} 
 
-#literature_object <- test_literature_score(literature_object, total_genes, remove_ambiguous = F )
+#literature_object <- test_literature_score(literature_object, total_genes, remove_ambiguous = FALSE )
 #save(literature_object, file= '../literature_object.RData')
-load('../literature_object.RData')
+data("literature_object")
 ```
 
 
@@ -192,7 +192,7 @@ Let's look at the top genes associated with Dengue in the literature, in the lit
 
 
 ```{r}
-literature_object$all_gene_combinations$Gene[order(literature_object$all_gene_combinations$count, decreasing = T)][1:30]
+literature_object$all_gene_combinations$Gene[order(literature_object$all_gene_combinations$count, decreasing = TRUE)][1:30]
 ```
 
 
@@ -215,7 +215,7 @@ we can use the much quicker "retest_literature_score" function.
 
 ```{r}
 
-retested_literature_object <- retest_literature_score(literature_object, remove_ambiguous = T, nsim = 10000)
+retested_literature_object <- retest_literature_score(literature_object, remove_ambiguous = TRUE, nsim = 10000)
 ```
 
 The pvalue after removing the noise is around 0.043. It will oscilate slightly everytime, as there is a component of randomness in the simulation.

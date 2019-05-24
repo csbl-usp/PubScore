@@ -42,7 +42,7 @@ terms_of_interest <-
   )
 literature_object <- PubScore::get_literature_score(genes, terms_of_interest)
 total_genes <- c('CD14','notagenemock1','notagenemock2','notagenemock3', "PROC", "IMPACT")
-literature_object <- test_literature_score(literature_object, total_genes, remove_ambiguous = F)
-literature_object <- retest_literature_score(literature_object, remove_ambiguous = T)
+literature_object <- test_literature_score(literature_object, total_genes, remove_ambiguous = FALSE)
+literature_object <- retest_literature_score(literature_object, remove_ambiguous = TRUE)
 
 }
