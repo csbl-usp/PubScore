@@ -215,13 +215,23 @@ we can use the much quicker "retest_literature_score" function.
 
 ```{r}
 
-retest_literature_score(literature_object, remove_ambiguous = T)
+retested_literature_object <- retest_literature_score(literature_object, remove_ambiguous = T, nsim = 10000)
 ```
 
-0.04266 Ok, it is a higher score than expected by random in 95.7% of the cases. 
-The threshold of 95% is rather arbitrary and there is a big movement to reject the hard definition of statistical significance.
+The pvalue after removing the noise is around 0.043. It will oscilate slightly everytime, as there is a component of randomness in the simulation.
 
-In this case, the p-value is shorter than the 0.05, so I can say confidently that the list returned by FCBF is more related to Dengue than expected by chance. 
+I'd like to point that the threshold of 95% is rather arbitrary and there is a big movement to reject the hard definition of statistical significance.
 
+In this case, the p-value is even shorter than the old-fashioned 0.05, so I can say confidently that the list returned by FCBF is more related to the "Dengue" term" than expected by chance. 
 
+To finish this vignett, if you want to select your own list of ambiguously named genes, you can do so in the retest function. 
+
+```{r}
+retested_literature_object <- retest_literature_score(literature_object, 
+                                                      new_ambigous_term_list = 
+                                                      c("PC", "JUN", "IMPACT"), nsim = 10000)
+
+```
+
+Of course, this parameter is likely to afect the final result. 
 
