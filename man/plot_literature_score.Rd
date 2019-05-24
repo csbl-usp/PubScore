@@ -21,13 +21,14 @@ A ploty/ggplot2 object is either returned or directly plotted
 \description{
 Plots a non-clusterized heatmap of the article counts for the combination of
 gene list and list of terms
-NOTE: the object has to be exactly the one returned by get_literature_score.R . 
+NOTE: the object has to be exactly the one returned by get_literature_score.R .
 Otherwise ggplot2 will not be able to identify the correct columns.
 }
 \examples{
-gene <- 'CD4'
+gene <- c('CD4','CD14')
 terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-                      "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-literature_list <- get_literature_score(gene, terms_of_interest, max_score = 500)
-plot_literature_score(literature_score_list$counts)
+                       "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
+ literature_list <- PubScore::get_literature_score(gene, terms_of_interest, max_score = 500)
+ P <-plot_literature_score(literature_list$counts, return_ggplot = T)
+plotly::ggplotly(P)
 }

@@ -34,19 +34,20 @@ The importance score is the total counts of articles in the pubmed
 database that are a result for that gene AND each term of a list
 }
 \examples{
-  gene <- 'CD4'
-  terms_of_interest <-
-    c(
-      "CD4 T cell",
-      "CD14+ Monocyte",
-      "B cell",
-      "CD8 T cell",
-      "FCGR3A+ Monocyte",
-      "NK cell",
-      "Dendritic cell",
-      "Megakaryocyte",
-      'immunity'
-    )
-  get_literature_score(gene, terms_of_interest, max_score = 500)
-  get_literature_score(gene, terms_of_interest, max_score = Inf)
+   gene <- 'CD4'
+   terms_of_interest <-
+     c(
+       "CD4 T cell",
+       "CD14+ Monocyte",
+       "B cell",
+       "CD8 T cell",
+       "FCGR3A+ Monocyte",
+       "NK cell",
+       "Dendritic cell",
+       "Megakaryocyte",
+       'immunity'
+     )
+   get_literature_score(gene, terms_of_interest, max_score = 500)
+   get_literature_score(gene, terms_of_interest, max_score = Inf)
+
 }

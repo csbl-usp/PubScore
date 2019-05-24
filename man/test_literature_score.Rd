@@ -2,10 +2,10 @@
 % Please edit documentation in R/test_literature_score.R
 \name{test_literature_score}
 \alias{test_literature_score}
-\title{get_literature_score}
+\title{test_literature_score}
 \usage{
 test_literature_score(literature_object, total_genes,
-  show_progress = TRUE, verbose = FALSE)
+  show_progress = TRUE, remove_ambiguous = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{literature_object}{The object returned by the get_literature_score function}
@@ -15,31 +15,32 @@ Usually all the names in the rows of an "exprs" object.}
 
 \item{show_progress}{If TRUE, a progress bar is displayed. Defaults to True.}
 
+\item{remove_ambiguous}{If TRUE, ambiguously named genes (such as "MARCH") will be removed. Defaults to TRUE.}
+
 \item{verbose}{If TRUE, will display the index of the search occuring. Defaults to false.}
 }
 \value{
 A dataframe with the literature scores.
 }
 \description{
-Calculates the importance score for a given gene.
-The importance score is the total counts of articles in the pubmed
-database that are a result for that gene AND each term of a list
+gets a pvalue, by simulation, for a literature score.
 }
 \examples{
-   genes <- c('CD4','CD8')
-   terms_of_interest <-
-     c(
-       "CD4 T cell",
-       "CD14+ Monocyte",
-       "B cell",
-       "CD8 T cell",
-       "FCGR3A+ Monocyte",
-       "NK cell",
-       "Dendritic cell",
-       "Megakaryocyte",
-       'immunity'
-     )
- literature_object <- PubScore::get_literature_score(gene, terms_of_interest, 500)
- total_genes <- c('CD4', 'CD8','CD7','ASDASD','ADSFASD','ADSFASDS', 'asdas')
- literature_object <- test_literature_score(literature_object, total_genes)
+     genes <- c('CD14')
+     terms_of_interest <-
+       c(
+         "CD4 T cell",
+         "CD14+ Monocyte",
+         "B cell",
+         "CD8 T cell",
+         "FCGR3A+ Monocyte",
+         "NK cell",
+         "Dendritic cell",
+         "Megakaryocyte",
+         'immunity'
+       )
+   literature_object <- PubScore::get_literature_score(genes, terms_of_interest)
+   total_genes <- c('CD14', 'notagenemock1','notagenemock2','notagenemock3', "PROC", "IMPACT")
+   literature_object <- test_literature_score(literature_object, total_genes)
+ 
 }

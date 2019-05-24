@@ -70,7 +70,9 @@ head(fcbf_features)
 
 
 The scDengue dataset is using Ensemble IDs, and usually papers use gene symbols 
-(as TP53 and CD3D). biomaRt can fix this. 
+(as TP53 and CD3D). 
+
+This is important, as PubScore will search for the genes on pubmed EXACTLY as they are on your vector. The package biomaRt can be used to fix this, as it contains the reference databases we need. 
 
 ```{r}
 library(biomaRt)
@@ -93,26 +95,23 @@ fcbf_genes <- fcbf_genes[fcbf_genes != ""]
 ```
 
 
-First let's see the association of the fcbf_genes with dengue-related terms.
+First let's visualize the association of the fcbf_genes with dengue-related terms.
+
 The PubScore package queries the PubMed database, so it takes about 0.7s for 
 each search. 
 
 As we have 62 genes and 2 terms, 62 * 0.7 = 43.8 s, the function should
 take less than a  minute to run.
 
+After getting the literature object from the get_literature score function,  we can visualize the gene-term relationships with the plot_literature_score function. 
+
+
 ```{r}
 terms_of_interest <- c('Dengue')
 
 literature_object <- PubScore::get_literature_score(gene = fcbf_genes,is.list = T,terms_of_interest = terms_of_interest)
-
-```
-
-With the literature object, now we can visualize the gene-term relationships 
-with the plot_literature_score function. 
-
-```{r}
-
 library(ggplot2)
+
 p <- plot_literature_score(plot_counts = literature_object$counts, return_ggplot = T)
 library(plotly)
 ggplotly(p)
@@ -122,6 +121,9 @@ ggplotly(p)
 There are a few genes that have been related to dengue previously, such as MAVS. There is a Nature Immunology research highligh entitled "Dengue suppresses MAVS". 
 (www.nature.com/articles/ni.3527)
 
+FES may be a false positive, but MX1 is related to antiviral response and NFKB2 is related to inflamation.
+
+
 Qualitatetively, it seems that indeed some of these genes are already related to Dengue. 
 But how many Dengue-related genes would I expect by chance alone?
 
@@ -130,37 +132,49 @@ genes. That is the goal of the 'test_literature_score' function.
 
 WARNING: This functions takes 6 hours to run. That is because a lot of requests are made to
 pubmed. We ran it and made the final output available here so you don't need it. 
-But feel free to do it. 
+It is commented out of the code because of that, but feel free to run it. 
 
 ```{r eval = FALSE} 
-literature_object <- test_literature_score(literature_object, total_genes)
-save(literature_object, file= '../literature_object.RData')
-load('../literature_object.RData')
 
-literature_object$all_gene_combinations <- literature_object$all_gene_combinations[literature_object$all_gene_combinations$Var2 == 'Dengue',]
+#literature_object <- test_literature_score(literature_object, total_genes, remove_ambiguous = F )
+#save(literature_object, file= '../literature_object.RData')
+load('../literature_object.RData')
 ```
 
 
-We will re-do the p-value estimation just to be really clear about it. 
+We will re-do the p-value estimation just to be really clear about how it is done. 
 ```{r}
+
+# A table with all possible combinations is generated
 simulation_of_literature_null <- literature_object$all_gene_combinations
 
-message('Running 100000 simulations')
+# Then, a number of genes equal to your original list is picked
+# and, from this list, we get a score.
+# This process is repeated 10 thousand times.
+
+message('Running 10000 simulations')
       distribution_of_scores <- c()
-      for (i in seq_len(100000)){    
+      for (i in seq_len(10000)){
+        
         genes_to_sample_now <- sample(total_genes, 62)
+        
         simu_now <- simulation_of_literature_null[simulation_of_literature_null$Gene %in% genes_to_sample_now,]$count
+        
         list_score <- sum(simu_now) / 62
         distribution_of_scores <- c(distribution_of_scores,list_score )
         
       }
       
-      distribution_of_scores<- data.frame(d = distribution_of_scores)
+    distribution_of_scores<- data.frame(d = distribution_of_scores)
+    
+    # The score to compare is the one of the original list  
+    score <- literature_object$list_literature_score
       
-score <- literature_object$list_literature_score
-      
+    # Then you ask: how many of the null simulations had a score
+    # as high as the one of the original list?
+    # This is the simulated p-value!
 
-  pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])
+    pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])
     
     
     print('The p-value by simulation is:')
@@ -174,169 +188,40 @@ did not work very well for this discretization/dataset. Or that the information
 regarding the association of these genes to Dengue  is largely  absent from the 
 literature.
 
-Let's look at the top genes associated with Dengue in the literature.
+Let's look at the top genes associated with Dengue in the literature, in the literature object.
 
 
 ```{r}
-literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),][1:20]
+literature_object$all_gene_combinations$Gene[order(literature_object$all_gene_combinations$count, decreasing = T)][1:30]
 ```
 
 
 Hm there are clearly problems with these genes... they are ambiguous!
 We will have to blacklist a few genes to avoid these outliers. 
+After some digging, I manually selected this list of ambiguously named genes.
 
-Genes blacklisted :
+Genes blacklisted :      
+"PC", "JUN", "IMPACT", "ACHE", "SRI", "SET", "CS", "PROC", 
+"MET", "SHE", "CAD", "DDT", "PIGS", "SARS", "REST", "GC", "CP", 
+"STAR", "SI", "GAN", "MARS", "SDS", "AGA", "NHS", "CPE", "POR", 
+"MAX", "CAT", "LUM", "ANG", "POLE", "CLOCK", "TANK", "ITCH", 
+"SDS", "AES", "CIC", "FST", "CAPS", "COPE", "F2", "AFM", "SPR", 
+"PALM", "C2", "BAD", "GPI", "CA2", "SMS", "INVS", "WARS", "HP", 
+"GAL", "SON", "AFM", "BORA", "MBP", "MAK", "MALL", "COIL", "CAST"" 
 
 
-```{r}
-literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[1:20]
-black_list <-
-  c(
-  "PC",
-  "JUN" ,
-  "IMPACT",
-  "ACHE",
-  "SRI" ,
-  "SET"  ,
-  "CS" ,
-  "PROC"   ,
-  "MET" ,
-  "SHE"   ,
-  "CAD"  ,
-  "DDT",
-  "PIGS"   ,
-  "SARS" ,
-  "REST" ,
-  "GC",
-  "CP",
-  "STAR",
-  "SI"
-  )
-```
-
-From the first 20, only 'HLA-A' seems like a true positive. Let's look further.
-
+Instead of running the time-consuming test_literature_score function again,
+we can use the much quicker "retest_literature_score" function.
 
 ```{r}
-literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[21:40]
 
-black_list <-
-  c( black_list,
-  "GAN",
-  "MARS" ,
-  "SDS",
-  "AGA",
-  "NHS" ,
-  "CPE"  ,
-  "POR" ,
-  "MAX"   ,
-  "CAT" ,
-  "LUM"   ,
-  "ANG"  ,
-  "POLE",
-  "CLOCK"
-  )
+retest_literature_score(literature_object)
 ```
 
-More fakers. Let's keep digging.
+0.04266 Ok, it is a higher score than expected by random in 95.7% of the cases. 
+The threshold of 95% is rather arbitrary and there is a big movement to reject the hard definition of statistical significance.
+
+In this case, the p-value is shorter than the 0.05, so I can say confidently that the list returned by FCBF is more related to Dengue than expected by chance. 
 
 
-```{r}
-literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[41:60]
-
-black_list <-
-  c( black_list,
-  "TANK",
-  "ITCH" ,
-  "SDS",
-  "AES",
-  "CIC" ,
-  "FST"  ,
-  "CAPS" ,
-  "COPE"   ,
-  "F2" ,
-  "AFM"    ,
-  "SPR"  ,
-  "PALM",
-  "C2"
-  )
-```
-
-More fakers. Let's keep digging.
-
-
-```{r}
-literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[61:80]
-
-black_list <-
-  c( black_list,
-  "BAD",
-  "GPI" ,
-  "CA2",
-  "SMS",
-  "INVS" ,
-  "WARS"  ,
-  "HP" ,
-  "GAL"   ,
-  "SON" ,
-  "AFM"
-  )
-```
-
-More fakers. Let's keep digging.
-
-
-```{r}
-literature_object$all_gene_combinations[order(literature_object$all_gene_combinations$count, decreasing = T),]$Gene[81:100]
-
-black_list <-
-  c( black_list,
-  "BORA",
-  "MBP" ,
-  "MAK",
-  "MALL",
-  "COIL" ,
-  "CAST " 
-  )
-save(black_list,file = 'blacklist.RData')
-
-```
-
-Let's see if there are any blacklisted genes in the FCBF-selected ones. 
-
-```{r}
-any(fcbf_genes %in% black_list)
-```
-
-Uhul, there aren't any! Let's try the simulation again. 
-
-
-```{r}
-simulation_of_literature_null <- literature_object$all_gene_combinations[!literature_object$all_gene_combinations$Gene %in% black_list,]
-
-message('Running 100000 simulations')
-      distribution_of_scores <- c()
-      for (i in seq_len(100000)){    
-        genes_to_sample_now <- sample(total_genes, 62)
-        simu_now <- simulation_of_literature_null[simulation_of_literature_null$Gene %in% genes_to_sample_now,]$count
-        list_score <- sum(simu_now) / 62
-        distribution_of_scores <- c(distribution_of_scores,list_score )
-        
-      }
-      
-      distribution_of_scores<- data.frame(d = distribution_of_scores)
-      
-score <- literature_object$list_literature_score
-      
-
-  pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])
-    
-    
-    print('The p-value by simulation is:')
-    print(pvalue) 
-```
-
-0.11197. Ok, it is a higher score than expected by random in 88% of the cases. It is not that bad. 
-The threshold of 95% is rather arbitrary and there is a big movement to reject the hard 
-definition of statistical significance. 
 
