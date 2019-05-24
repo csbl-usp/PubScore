@@ -5,7 +5,8 @@
 \title{test_literature_score}
 \usage{
 test_literature_score(literature_object, total_genes,
-  show_progress = TRUE, remove_ambiguous = TRUE, verbose = FALSE)
+  show_progress = TRUE, remove_ambiguous = TRUE, verbose = FALSE,
+  nsim = 1e+05)
 }
 \arguments{
 \item{literature_object}{The object returned by the get_literature_score function}
@@ -18,6 +19,8 @@ Usually all the names in the rows of an "exprs" object.}
 \item{remove_ambiguous}{If TRUE, ambiguously named genes (such as "MARCH") will be removed. Defaults to TRUE.}
 
 \item{verbose}{If TRUE, will display the index of the search occuring. Defaults to false.}
+
+\item{nsim}{The number of simulations to run. Defaults to 100000.}
 }
 \value{
 A dataframe with the literature scores.

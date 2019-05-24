@@ -5,7 +5,8 @@
 \title{retest_literature_score}
 \usage{
 retest_literature_score(literature_object,
-  new_ambigous_term_list = FALSE, remove_ambiguous = FALSE)
+  new_ambigous_term_list = FALSE, remove_ambiguous = FALSE,
+  nsim = 1e+05)
 }
 \arguments{
 \item{literature_object}{The object returned by the test_literature_score function}
@@ -15,6 +16,8 @@ If left blank, a default list is used.}
 
 \item{remove_ambiguous}{If TRUE, ambiguously named genes (such as "MARCH") will be removed. 
 Defaults to TRUE.}
+
+\item{nsim}{The number of simulations to run. Defaults to 100000.}
 }
 \value{
 A dataframe with the literature scores.
