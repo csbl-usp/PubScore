@@ -215,7 +215,7 @@ we can use the much quicker "retest_literature_score" function.
 
 ```{r}
 
-retest_literature_score(literature_object)
+retest_literature_score(literature_object, remove_ambiguous = T)
 ```
 
 0.04266 Ok, it is a higher score than expected by random in 95.7% of the cases. 

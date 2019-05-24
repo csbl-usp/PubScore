@@ -1,13 +1,12 @@
-.getSimulation_test <- function(literature_object, ambiguous = c()) {
+.getSimulation_test <- function(literature_object, ambiguous = c(), n_simulations) {
   simulation_of_literature_null <-
     literature_object$all_gene_combinations[!literature_object$all_gene_combinations$Gene %in% ambiguous, ]
   
   n_genes <- length(levels(literature_object$counts$Gene[!literature_object$counts$Gene %in% ambiguous ]))
   total_genes <- levels(droplevels(simulation_of_literature_null$Gene))
-  message('Running 100000 simulations')
-  
+  message(paste0('Running', n_simulations,'simulations'))
   distribution_of_scores <- c()
-  for (i in seq_len(100000)) {
+  for (i in seq_len(n_simulations)) {
     genes_to_sample_now <- sample(total_genes, n_genes)
     simu_now <-
       simulation_of_literature_null[simulation_of_literature_null$Gene %in% genes_to_sample_now, ]$count
@@ -35,6 +34,7 @@
 #' @param show_progress If TRUE, a progress bar is displayed. Defaults to True.
 #' @param verbose If TRUE, will display the index of the search occuring. Defaults to false.
 #' @param remove_ambiguous If TRUE, ambiguously named genes (such as "MARCH") will be removed. Defaults to TRUE.  
+#' @param nsim The number of simulations to run. Defaults to 100000.
 #' @import rentrez
 #' @import progress
 #' @return A dataframe with the literature scores.
@@ -62,7 +62,9 @@ test_literature_score <-
            total_genes,
            show_progress = TRUE,
            remove_ambiguous = TRUE,
-           verbose = FALSE) {
+           verbose = FALSE,
+           nsim = 100000) {
+    
     terms_of_interest <- levels(literature_object$counts$Topic)
     genes_to_sample <- length(levels(literature_object$counts$Gene))
     
@@ -93,7 +95,7 @@ test_literature_score <-
 
     if (remove_ambiguous == FALSE){
       
-      distribution_of_scores <- .getSimulation_test(obj)
+      distribution_of_scores <- .getSimulation_test(obj, n_simulations = nsim)
       score <- mean(literature_object$counts$count)
       pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])
       
@@ -114,7 +116,7 @@ test_literature_score <-
                          "PALM", "C2", "BAD", "GPI", "CA2", "SMS", "INVS", "WARS", "HP", 
                          "GAL", "SON", "AFM", "BORA", "MBP", "MAK", "MALL", "COIL", "CAST ")
     
-    distribution_of_scores <- .getSimulation_test(obj, ambiguous =  ambiguous_terms)
+    distribution_of_scores <- .getSimulation_test(obj, ambiguous =  ambiguous_terms, n_simulations = nsim)
     
     score <- mean(literature_object$counts$count[!literature_object$counts$Gene %in% ambiguous_terms])
     pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])

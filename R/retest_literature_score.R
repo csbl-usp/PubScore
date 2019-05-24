@@ -1,13 +1,13 @@
 
 
-.getSimulation_retest <- function(literature_object, ambiguous = c()) {
+.getSimulation_retest <- function(literature_object, ambiguous = c(),  n_simulations ) {
   simulation_of_literature_null <-
     literature_object$all_gene_combinations[!literature_object$all_gene_combinations$Gene %in% ambiguous, ]
   n_genes <- length(levels(literature_object$counts$Gene))
   total_genes <- simulation_of_literature_null$Gene
-  message('Running 100000 simulations')
+  message(paste0('Running', n_simulations,'simulations'))
   distribution_of_scores <- c()
-  for (i in seq_len(100000)) {
+  for (i in seq_len(n_simulations)) {
     genes_to_sample_now <- sample(total_genes, n_genes)
     simu_now <-
       simulation_of_literature_null[simulation_of_literature_null$Gene %in% genes_to_sample_now, ]$count
@@ -34,6 +34,7 @@
 #' If left blank, a default list is used.
 #' @param remove_ambiguous If TRUE, ambiguously named genes (such as "MARCH") will be removed. 
 #' Defaults to TRUE.  
+#' @param nsim The number of simulations to run. Defaults to 100000.
 #' @import rentrez
 #' @import progress
 #' @return A dataframe with the literature scores.
@@ -61,11 +62,12 @@
 retest_literature_score <-
   function(literature_object,
            new_ambigous_term_list = FALSE,
-           remove_ambiguous = FALSE) {
+           remove_ambiguous = FALSE,
+           nsim = 100000) {
     
     if (any(new_ambigous_term_list != FALSE)) {
       distribution_of_scores <-
-        .getSimulation_retest(literature_object, new_ambigous_term_list)
+        .getSimulation_retest(literature_object, new_ambigous_term_list, n_simulations = nsim)
       score <-
         mean(literature_object$counts$count[!literature_object$counts$Gene %in% new_ambigous_term_list])
       pvalue <-
@@ -78,7 +80,7 @@ retest_literature_score <-
     }
     
     if (remove_ambiguous == FALSE) {
-      distribution_of_scores <- .getSimulation_retest(literature_object)
+      distribution_of_scores <- .getSimulation_retest(literature_object,  n_simulations = nsim)
       
       score <- mean(literature_object$counts$count)
       pvalue <-
@@ -164,7 +166,7 @@ retest_literature_score <-
           "CAST "
         )
       distribution_of_scores2 <-
-        .getSimulation_retest(literature_object, ambiguous_terms)
+        .getSimulation_retest(literature_object, ambiguous_terms,  n_simulations = nsim)
       
       score <-
         mean(literature_object$counts$count[!literature_object$counts$Gene %in% ambiguous_terms])
