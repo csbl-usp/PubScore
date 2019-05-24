@@ -4,7 +4,7 @@
   
   n_genes <- length(levels(literature_object$counts$Gene[!literature_object$counts$Gene %in% ambiguous ]))
   total_genes <- levels(droplevels(simulation_of_literature_null$Gene))
-  message(paste0('Running', n_simulations,'simulations'))
+  message(paste0('Running ', n_simulations,' simulations'))
   distribution_of_scores <- c()
   for (i in seq_len(n_simulations)) {
     genes_to_sample_now <- sample(total_genes, n_genes)
