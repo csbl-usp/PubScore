@@ -6,11 +6,12 @@
   total_genes <- levels(droplevels(simulation_of_literature_null$Gene))
   message(paste0('Running ', n_simulations,' simulations'))
   distribution_of_scores <- c()
+  
   for (i in seq_len(n_simulations)) {
     genes_to_sample_now <- sample(total_genes, n_genes)
     simu_now <-
       simulation_of_literature_null[simulation_of_literature_null$Gene %in% genes_to_sample_now, ]$count
-    list_score <- sum(simu_now) / n_genes
+    list_score <- (simu_now) / n_genes
     distribution_of_scores <- c(distribution_of_scores, list_score)
     
   }
@@ -96,7 +97,7 @@ test_literature_score <-
     if (remove_ambiguous == FALSE){
       
       distribution_of_scores <- .getSimulation_test(obj, n_simulations = nsim)
-      score <- mean(literature_object$counts$count)
+      score <- sum(literature_object$counts$count)/genes_to_sample
       pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])
       
       print('The p-value by simulation is:')

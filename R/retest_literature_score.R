@@ -64,12 +64,14 @@ retest_literature_score <-
            new_ambigous_term_list = FALSE,
            remove_ambiguous = FALSE,
            nsim = 100000) {
+    genes_to_sample <- length(levels(literature_object$counts$Gene))
+    
     
     if (any(new_ambigous_term_list != FALSE)) {
       distribution_of_scores <-
         .getSimulation_retest(literature_object, new_ambigous_term_list, n_simulations = nsim)
       score <-
-        mean(literature_object$counts$count[!literature_object$counts$Gene %in% new_ambigous_term_list])
+        sum(literature_object$counts$count[!literature_object$counts$Gene %in% new_ambigous_term_list])/genes_to_sample
       pvalue <-
         sum(distribution_of_scores[, 1] >= score) / length(distribution_of_scores[, 1])
       literature_object[['p_value']] <- pvalue
@@ -82,7 +84,7 @@ retest_literature_score <-
     if (remove_ambiguous == FALSE) {
       distribution_of_scores <- .getSimulation_retest(literature_object,  n_simulations = nsim)
       
-      score <- mean(literature_object$counts$count)
+      score <- sum(literature_object$counts$count)/genes_to_sample
       pvalue <-
         sum(distribution_of_scores[, 1] >= score) / length(distribution_of_scores[, 1])
       
@@ -169,7 +171,7 @@ retest_literature_score <-
         .getSimulation_retest(literature_object, ambiguous_terms,  n_simulations = nsim)
       
       score <-
-        mean(literature_object$counts$count[!literature_object$counts$Gene %in% ambiguous_terms])
+        sum(literature_object$counts$count[!literature_object$counts$Gene %in% ambiguous_terms])/genes_to_sample
       pvalue <-
         sum(distribution_of_scores2[, 1] >= score) / length(distribution_of_scores2[, 1])
       literature_object[['p_value']] <- pvalue
