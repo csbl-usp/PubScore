@@ -41,8 +41,10 @@ and estimate the likelihood of such a score (or higher) happening by chance.
 We will use the scDengue dataset, of dengue-infected monocytes, from the FCBF package. 
 We will see the FCBF selected genes are already related in the literature to dengue. 
 
-```{r}
-BiocManager::install("PubScore")
+```{r messages = FALSE }
+remotes::install_github('lubianat/FCBF')
+remotes::install_github('lubianat/FCBF')
+
 
 library("FCBF")
 library('SummarizedExperiment')
