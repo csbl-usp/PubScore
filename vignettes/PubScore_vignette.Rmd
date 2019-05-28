@@ -38,12 +38,61 @@ Let's start by installing the package.
 Let's explore how to calculate a literature score for selected genes, 
 and estimate the likelihood of such a score (or higher) happening by chance. 
 
+
+
+#Basic Usage 
+
+To start, we will look at a list of genes. Pretend that they were the result of some previous analysis. They might be important to  the function of some different immune cells (B cells, macrophages and NK cells). 
+
+However, you are implementing a novel method, and you are not sure if the method is actually working. So, your goal is:
+
+  1 - Decide if the method is indeed working by searching the literature.
+  2 - Fish out of the many genes, the ones that you want to focus your research effort on. 
+  
+```{r}
+# list of genes :
+selected_genes <- c('CD79A', 'CD18', 'NKG7', 'CST3', 'AIF1')
+
+# These genes were selected from a panel containing the following genes
+total_genes <- c('CD79A', 'CD18', 'NKG7', 'CST3', 'AIF1', 'FOXA1', 'PPT2', 'ZFP36L1','AFF4', 'ANTXR2', "HDAC8", "VKORC1" )
+
+terms_of_interest <- c("B cells", "macrophages", "NK cells")
+```
+
+
+First, let's observe the literature object produced by the function. 
+
+```{r}
+literature_object <- PubScore::get_literature_score(selected_genes, terms_of_interest = terms_of_interest, is.list = T)
+
+print('The score for the list is:')
+print(literature_object$list_literature_score)
+```
+
+This score is the average number of articles for each gene x term combination of the list on PubMed. In the object we also have the date and a pre-set max_score. 
+
+The number does not mean much. Higher values mean that the genes are more associated to the terms. But, what is the score I expect by chance? Let's run a permutation test to estimate this p-value.
+
+For this, we need the list of all genes that could have been selected. This was assigned above to the variable total_genes
+
+
+```{r}
+literature_object_tested <- PubScore::test_literature_score(literature_object,
+total_genes,                                                          remove_ambiguous = T)
+
+```
+
+
+
+
+#Advanced Usage
+
 We will use the scDengue dataset, of dengue-infected monocytes, from the FCBF package. 
 We will see the FCBF selected genes are already related in the literature to dengue. 
 
 ```{r messages = FALSE }
 remotes::install_github('lubianat/FCBF')
-remotes::install_github('lubianat/FCBF')
+remotes::install_github('lubianat/PubScore')
 
 
 library("FCBF")

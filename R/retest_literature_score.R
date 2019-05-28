@@ -176,7 +176,7 @@ retest_literature_score <-
         sum(distribution_of_scores2[, 1] >= score) / length(distribution_of_scores2[, 1])
       literature_object[['p_value']] <- pvalue
       
-      print('The p-value by simulation removing the default list of ambiguous genes is:')
+      print('The p-value by simulation after removing the default list of ambiguous genes is:')
       print(pvalue) 
       
       return(literature_object)
