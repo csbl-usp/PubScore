@@ -77,18 +77,27 @@ For this, we need the list of all genes that could have been selected. This was 
 
 
 ```{r}
-literature_object_tested <- PubScore::test_literature_score(literature_object,
+literature_object_tested <- test_literature_score(literature_object,
 total_genes,                                                          remove_ambiguous = T)
 
 ```
 
+It seems that this list is indeed enriched for genes related to these terms. 
+How surprising! (not really, it was built in that way). 
+Let's look at the interactive heatmap and understand better the relation of these genes and these terms. 
 
-
-
+```{r}
+p <- PubScore::plot_literature_score(literature_object_tested$counts, return_ggplot = T)
+library(plotly)
+ggplotly(p)
+```
 #Advanced Usage
 
-We will use the scDengue dataset, of dengue-infected monocytes, from the FCBF package. 
-We will see the FCBF selected genes are already related in the literature to dengue. 
+Now let's advance to a real-world scenarium. 
+
+We will use the scDengue dataset, of dengue-infected monocytes, from the FCBF package. This package (Disclaimer: also developed by us) runs an algorithm for feature selection coupled with redundancy removal. It select variables that are  generally good for classification tasks. 
+
+We will see the if the genes selected by FCBF (in the context of macrophage infection) genes are already related in PubMed to dengue. And, using the plot_literature_score pinpoint the genes that are contributing mostly to this effect. 
 
 ```{r messages = FALSE }
 remotes::install_github('lubianat/FCBF')
