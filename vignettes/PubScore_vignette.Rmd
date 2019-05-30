@@ -50,6 +50,9 @@ However, you are implementing a novel method, and you are not sure if the method
   2 - Fish out of the many genes, the ones that you want to focus your research effort on. 
   
 ```{r}
+remotes::install_github('lubianat/FCBF')
+remotes::install_github('lubianat/PubScore')
+library(PubScore)
 # list of genes :
 selected_genes <- c('CD79A', 'CD18', 'NKG7', 'CST3', 'AIF1')
 
@@ -63,7 +66,7 @@ terms_of_interest <- c("B cells", "macrophages", "NK cells")
 First, let's observe the literature object produced by the function. 
 
 ```{r}
-literature_object <- PubScore::get_literature_score(selected_genes, terms_of_interest = terms_of_interest, is.list = T)
+literature_object <- PubScore::get_literature_score(selected_genes, terms_of_interest = terms_of_interest, is.list = TRUE)
 
 print('The score for the list is:')
 print(literature_object$list_literature_score)
@@ -78,7 +81,7 @@ For this, we need the list of all genes that could have been selected. This was 
 
 ```{r}
 literature_object_tested <- test_literature_score(literature_object,
-total_genes,                                                          remove_ambiguous = T)
+total_genes,                                                          remove_ambiguous = TRUE)
 
 ```
 
@@ -87,7 +90,7 @@ How surprising! (not really, it was built in that way).
 Let's look at the interactive heatmap and understand better the relation of these genes and these terms. 
 
 ```{r}
-p <- PubScore::plot_literature_score(literature_object_tested$counts, return_ggplot = T)
+p <- PubScore::plot_literature_score(literature_object_tested$counts, return_ggplot = TRUE)
 library(plotly)
 ggplotly(p)
 ```
@@ -100,13 +103,8 @@ We will use the scDengue dataset, of dengue-infected monocytes, from the FCBF pa
 We will see the if the genes selected by FCBF (in the context of macrophage infection) genes are already related in PubMed to dengue. And, using the plot_literature_score pinpoint the genes that are contributing mostly to this effect. 
 
 ```{r messages = FALSE }
-remotes::install_github('lubianat/FCBF')
-remotes::install_github('lubianat/PubScore')
-
-
 library("FCBF")
 library('SummarizedExperiment')
-library(PubScore)
 # load expression data
 data(scDengue)
 ```
