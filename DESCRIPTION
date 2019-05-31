@@ -8,11 +8,12 @@ Authors@R: c(person("Tiago", "Lubiana", email = "tiago.lubiana.alves@usp.br",
 Maintainer: Tiago Lubiana <tiago.lubiana.alves@usp.br>
 Description: Calculates the importance score for a given gene. The importance score is the total counts of articles in the pubmed database that are a result for that gene AND each term of a list.
 Imports: ggplot2, plotly, rentrez, progress, graphics
-Suggests: FCBF,
-    SingleCellExperiment, 
+Suggests: 
+    FCBF,
+    SingleCellExperiment,
     knitr,
     rmarkdown,
-    testthat,
+    testthat (>= 2.1.0),
     BiocManager,
     biomaRt
 biocViews: GeneSetEnrichment, GeneExpression, SystemsBiology, Genetics, Epigenetics, BiomedicalInformatics, Visualization, SingleCell
