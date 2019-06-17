@@ -17,12 +17,12 @@
 #' @return A ploty/ggplot2 object is either returned or directly plotted
 #' @export
 #' @examples
-#' gene <- c('CD4','CD14')
-#' terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-#'                        "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#'  literature_list <- PubScore::get_literature_score(gene, terms_of_interest, max_score = 500)
+#'  gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
+#'  terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
+#'                          "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
+#'  literature_list <- PubScore::get_literature_score(gene, terms_of_interest, max_score = Inf)
 #'  P <-plot_literature_score(literature_list$counts, return_ggplot = TRUE)
-#' plotly::ggplotly(P)
+#'  ggplotly(P)
 
 
 
@@ -34,8 +34,7 @@ plot_literature_score <-
       cut(
         plot_counts[, 3],
         breaks = c(-0.01, 0.01, 10, 50, 100, 500, Inf),
-        right = FALSE,
-        
+        right = FALSE
       )
     breaks = c("[-0.01,0.01)",
                "[0.01,10)",
@@ -70,11 +69,11 @@ plot_literature_score <-
         ),
         values = c(
           "0" = "black",
-          "1-10" = "wheat2",
-          "11-50" = "yellow3",
-          "51-100" = " orange",
-          "100-500" = "orangered",
-          "500+" = 'red4'
+          "1-10" = "rosybrown2",
+          "11-50" = "lightsalmon1",
+          "51-100" = "salmon2",
+          "100-500" = "indianred3",
+          "500+" = 'red3'
         ),
         name = "Article counts",
         labels = c("0", "1-10", "11-50", "51-100", "100-500", "500+")
