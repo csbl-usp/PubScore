@@ -1,4 +1,4 @@
-#'plot_literature_graph
+#' #'plot_literature_graph
 #'
 #'Plot a graph inspired in CEMiTool's graphs
 #'
