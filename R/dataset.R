@@ -1,15 +1,11 @@
 
 #' literature_object after pvalue testing
-#' Result of the test literature score function
+#' Result of the test_score method of the pubscore class
 #'
 
-#' @name literature_object
+#' @name all_counts
 #' @docType data
-#' @usage data(literature_object)
+#' @usage data(all_counts)
 #' @format A list
 #' @keywords datasets, pubmed, test, literature
-#' @examples
-#' data(literature_object)
-#' print(literature_object$p_value)
-#' retest_literature_score(literature_object, remove_ambiguous = TRUE, nsim = 10000 )
-"literature_object"
+"all_counts"

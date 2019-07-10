@@ -101,6 +101,27 @@ setMethod("networkViz", signature("PubScore"),
             return(pub@network)
           })
 
+
+#' Retrieve the literature_score attribute
+#' @param pub Object of class \code{PubScore}
+#' @return A "gg" object, from ggplot2, containing a network from the counts table.
+#' @examples
+#' Create a new pubscore object
+#' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
+#' plot(networkViz(pub))
+
+#' @rdname networkViz
+#' @export
+setGeneric("score", function(pub) {
+  standardGeneric("score")
+})
+
+#' @rdname networkViz
+setMethod("score", signature("PubScore"),
+          function(pub){
+            return(pub@literature_score)
+          })
+
 #' Auxiliary function for the test method 
 .getSimulation_test <- function(pub, ambiguous = c(), n_simulations) {
   simulation_of_literature_null <-
@@ -164,7 +185,7 @@ setMethod("test_score", signature("PubScore"),
 
             if (length(pub@all_counts) == 0){
              pub@total_genes <- total_genes
-             message('Running PubScore for all genes. Might take a while!')
+             message('Running the PubScore test for all genes. Might take a while to finish queries!')
              pb_test_score <-
                progress::progress_bar$new(format = "[:bar] :current/:total (:percent) eta: :eta", total = length(total_genes))
              

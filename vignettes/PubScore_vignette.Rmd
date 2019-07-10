@@ -54,10 +54,10 @@ remotes::install_github('lubianat/FCBF')
 remotes::install_github('lubianat/PubScore')
 library(PubScore)
 # list of genes :
-selected_genes <- c('CD79A', 'CD18', 'NKG7', 'CST3', 'AIF1')
+selected_genes <- c('CD79A', 'CD14', 'NKG7', 'CST3', 'AIF1')
 
 # These genes were selected from a panel containing the following genes
-total_genes <- c('CD79A', 'CD18', 'NKG7', 'CST3', 'AIF1', 'FOXA1', 'PPT2', 'ZFP36L1','AFF4', 'ANTXR2', "HDAC8", "VKORC1" )
+total_genes <- c('CD79A', 'CD14', 'NKG7', 'CST3', 'AIF1', 'FOXA1', 'PPT2', 'ZFP36L1','AFF4', 'ANTXR2', "HDAC8", "VKORC1" )
 
 terms_of_interest <- c("B cells", "macrophages", "NK cells")
 ```
@@ -66,11 +66,11 @@ terms_of_interest <- c("B cells", "macrophages", "NK cells")
 First, let's create a PubScore object 
 
 ```{r}
-pub <- pubscore(genes, terms_of_interest )
-print(pub@literature_score)
+pub <- pubscore(terms_of_interest = terms_of_interest, genes = selected_genes )
+print(score(pub))
 ```
 
-This score is the average number of articles for each gene x term combination of the list on PubMed. In the object we also have the date and a pre-set max_score. 
+This score is the average number of articles for each gene x term combination of the list on PubMed. In the object we also have many other attributes, but let's keep then for later. 
 
 The number does not mean much. Higher values mean that the genes are more associated to the terms. But, what is the score I expect by chance? Let's run a permutation test to estimate this p-value.
 
@@ -78,8 +78,7 @@ For this, we need the list of all genes that could have been selected. This was 
 
 
 ```{r}
-literature_object_tested <- test_literature_score(literature_object,
-total_genes,                                                          remove_ambiguous = TRUE)
+pub <- test_score(pub, total_genes =  total_genes)
 
 ```
 
@@ -88,10 +87,24 @@ How surprising! (not really, it was built in that way).
 Let's look at the interactive heatmap and understand better the relation of these genes and these terms. 
 
 ```{r}
-p <- PubScore::plot_literature_score(literature_object_tested$counts, return_ggplot = TRUE)
+p <- heatmapViz(pub)
 library(plotly)
 ggplotly(p)
 ```
+
+
+
+
+The heatmap makes it clear that CD79 is associated in the literature with B cells, and CD14 with all the terms. Well, if you hover the interactive plot with the mouse, you can see that it is more associated with macropahges than with NK cells or B cells.
+
+If you want to explore a bit more, there is also a network visualization:
+
+```{r}
+p <- networkViz(pub)
+plot(p)
+```
+
+
 #Advanced Usage
 
 Now let's advance to a real-world scenarium. 
@@ -165,12 +178,15 @@ After getting the literature object from the get_literature score function,  we 
 ```{r}
 terms_of_interest <- c('Dengue')
 
-literature_object <- PubScore::get_literature_score(gene = fcbf_genes,is.list = TRUE,terms_of_interest = terms_of_interest)
-library(ggplot2)
+pub <- pubscore(terms_of_interest = terms_of_interest, genes = fcbf_genes )
+print(score(pub))
 
-p <- plot_literature_score(plot_counts = literature_object$counts, return_ggplot = TRUE)
+p_map <- heatmapViz(pub)
 library(plotly)
-ggplotly(p)
+ggplotly(p_map)
+
+p_net <- networkViz(pub)
+plot(p_net)
 ```
 
 
@@ -192,9 +208,11 @@ It is commented out of the code because of that, but feel free to run it.
 
 ```{r} 
 
-#literature_object <- test_literature_score(literature_object, total_genes, remove_ambiguous = FALSE )
-#save(literature_object, file= '../literature_object.RData')
-data("literature_object")
+#' pub <- test_score(pub, total_genes = total_genes)
+#' all_counts <- pub@all_counts
+#' save(all_counts, file= '../data/all_counts.RData')
+data("all_counts")
+pub@all_counts <- all_counts
 ```
 
 
@@ -202,21 +220,22 @@ We will re-do the p-value estimation just to be really clear about how it is don
 ```{r}
 
 # A table with all possible combinations is generated
-simulation_of_literature_null <- literature_object$all_gene_combinations
+simulation_of_literature_null <- pub@all_counts
 
 # Then, a number of genes equal to your original list is picked
 # and, from this list, we get a score.
 # This process is repeated 10 thousand times.
 
-message('Running 10000 simulations')
+      message('Running 10000 simulations')
       distribution_of_scores <- c()
       for (i in seq_len(10000)){
         
         genes_to_sample_now <- sample(total_genes, 62)
         
-        simu_now <- simulation_of_literature_null[simulation_of_literature_null$Gene %in% genes_to_sample_now,]$count
+        simu_now <- simulation_of_literature_null[simulation_of_literature_null$Genes %in% genes_to_sample_now,]$count
         
-        list_score <- sum(simu_now) / 62
+        #the list score is made by the sum of all scores divided by the number of combinations (62 genes x 1 term)
+        list_score <- sum(simu_now) / (62 * 1)
         distribution_of_scores <- c(distribution_of_scores,list_score )
         
       }
@@ -224,7 +243,7 @@ message('Running 10000 simulations')
     distribution_of_scores<- data.frame(d = distribution_of_scores)
     
     # The score to compare is the one of the original list  
-    score <- literature_object$list_literature_score
+    score <- score(pub)
       
     # Then you ask: how many of the null simulations had a score
     # as high as the one of the original list?
@@ -238,7 +257,7 @@ message('Running 10000 simulations')
       
 ```
 
-Hm, the pvalue indicates that the list of genes obtained is not more related 
+Hm, the pvalue does not indicates confidently that the list of genes obtained is more related 
 to Dengue than what we would expect by chance. This might be a sign that FCBF
 did not work very well for this discretization/dataset. Or that the information 
 regarding the association of these genes to Dengue  is largely  absent from the 
@@ -248,7 +267,7 @@ Let's look at the top genes associated with Dengue in the literature, in the lit
 
 
 ```{r}
-literature_object$all_gene_combinations$Gene[order(literature_object$all_gene_combinations$count, decreasing = TRUE)][1:30]
+head(pub@all_counts$Genes[order(pub@all_counts$count, decreasing = TRUE)], 10)
 ```
 
 
@@ -266,15 +285,14 @@ Genes blacklisted :
 "GAL", "SON", "AFM", "BORA", "MBP", "MAK", "MALL", "COIL", "CAST"" 
 
 
-Instead of running the time-consuming test_literature_score function again,
-we can use the much quicker "retest_literature_score" function.
+We can run the test_score method again. Be cool, it will not do the enourmous pubmed queries a second time. 
 
 ```{r}
 
-retested_literature_object <- retest_literature_score(literature_object, remove_ambiguous = TRUE, nsim = 10000)
+pub <- test_score(pub, remove_ambiguous = TRUE, nsim = 10000)
 ```
 
-The pvalue after removing the noise is around 0.043. It will oscilate slightly everytime, as there is a component of randomness in the simulation.
+The pvalue after removing the noise is around 0.04. It will oscilate slightly everytime, as there is a component of randomness in the simulation. More simulations (higher nsim) will lead to more reliable estimates of p.
 
 I'd like to point that the threshold of 95% is rather arbitrary and there is a big movement to reject the hard definition of statistical significance.
 
@@ -283,11 +301,16 @@ In this case, the p-value is even shorter than the old-fashioned 0.05, so I can 
 To finish this vignett, if you want to select your own list of ambiguously named genes, you can do so in the retest function. 
 
 ```{r}
-retested_literature_object <- retest_literature_score(literature_object, 
+retested_literature_object <- test_score(literature_object, 
                                                       new_ambigous_term_list = 
                                                       c("PC", "JUN", "IMPACT"), nsim = 10000)
 
 ```
 
-Of course, this parameter is likely to afect the final result. 
+And  that's it!
 
+To wrap up, you can use PubScore to:
+
+- Visualize gene-term associations in a cool 
+- Calculate enrichments for lists of genes regarding literally any term of English
+- Get a clear, meaningful p-value for the enrichment 
