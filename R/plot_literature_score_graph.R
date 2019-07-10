@@ -14,13 +14,13 @@
 #' @return A ploty/ggplot2 object is either returned or directly plotted
 #' @export
 #' @examples
-#'    gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
-#'    terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-#'                            "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#'    literature_list <- PubScore::get_literature_score(gene, terms_of_interest, max_score = Inf)
-#'  pl <- plot_literature_graph(literature_list$counts, name = 'test')
-#'  pl
-#' 
+#'   gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
+#'   terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
+#'                             "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
+#'   literature_list <- PubScore::get_literature_score(gene, terms_of_interest, max_score = Inf)
+#'   pl <- plot_literature_graph(literature_list$counts, name = 'test')
+#'   pl
+ 
 
 plot_literature_graph <-
   function(plot_counts,
@@ -29,7 +29,7 @@ plot_literature_graph <-
            n = 10) {
     ig_obj <- igraph::graph.data.frame(plot_counts)
     sum_of_weights1 <-
-      plot_counts %>% group_by(Gene) %>%   summarise(Weight = sum(count))
+      plot_counts %>% group_by(Genes) %>%   summarise(Weight = sum(count))
     sum_of_weights2 <-
       plot_counts %>% group_by(Topic) %>%   summarise(Weight = sum(count))
     
@@ -57,7 +57,7 @@ plot_literature_graph <-
     
     degrees <- igraph::degree(ig_obj, normalized = FALSE)
     sumwts <- sum_of_weights$Weight
-    names(sumwts) <- sum_of_weights$Gene
+    names(sumwts) <- sum_of_weights$Genes
     ig_obj <-
       igraph::set_vertex_attr(ig_obj, "sumwts", value = sumwts)
     net_obj <- intergraph::asNetwork(ig_obj)
@@ -79,16 +79,16 @@ plot_literature_graph <-
     plotcord[, "shouldLabel"] <- FALSE
     plotcord[, "Type"] <- ""
     
-    max_n <- min(n, sum(names(sumwts) %in% plot_counts$Gene))
+    max_n <- min(n, sum(names(sumwts) %in% plot_counts$Genes))
     int_hubs <- names(sort(sumwts, decreasing = TRUE))[1:max_n]
     int_bool <- plotcord[, "vertex.names"] %in% int_hubs
-    plotcord[which(plotcord$vertex.names %in% plot_counts$Gene), "Type"] <-
+    plotcord[which(plotcord$vertex.names %in% plot_counts$Genes), "Type"] <-
       "Gene"
     plotcord[which(plotcord$vertex.names %in% plot_counts$Topic), "Type"] <-
       "Topic"
-    mod_genes <- names(sumwts[names(sumwts) %in% plot_counts$Gene])
+    mod_genes <- names(sumwts[names(sumwts) %in% plot_counts$Genes])
     sel_genes <-
-      names(sort(sumwts[names(sumwts) %in% plot_counts$Gene], decreasing = TRUE))[1:max_n]
+      names(sort(sumwts[names(sumwts) %in% plot_counts$Genes], decreasing = TRUE))[1:max_n]
     sel_vertex <-
       c(sel_genes, names(sumwts[names(sumwts) %in% plot_counts$Topic]))
     colnames(edges) <-  c("X1", "Y1", "X2", "Y2")
