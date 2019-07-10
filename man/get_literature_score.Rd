@@ -4,26 +4,20 @@
 \alias{get_literature_score}
 \title{get_literature_score}
 \usage{
-get_literature_score(gene, terms_of_interest, is.list = FALSE,
-  max_score = Inf, wait_time = 0, show_progress = TRUE,
-  verbose = FALSE)
+get_literature_score(genes, terms_of_interest, wait_time = 0,
+  show_progress = TRUE, verbose = FALSE)
 }
 \arguments{
-\item{gene}{The gene which you want to calculate the literature_score for, or a vector with multiple genes}
+\item{genes}{A vector with multiple genes.}
 
 \item{terms_of_interest}{A list of terms of interest related to the topic you want to find the relevance for}
-
-\item{is.list}{If you are searching a single gene or a list of genes. Defaults to false (single gene)}
-
-\item{max_score}{A cutoff for maximum numbers of search. Useful for avoiding outlier relations
-weighting too much. Defaults to Inf.}
 
 \item{wait_time}{How long should be the interval between two requests to the ENTREZ database when it fails.
 Defaults to 0. In seconds.}
 
-\item{show_progress}{If TRUE, a progress bar is displayed. Defaults to True.}
+\item{show_progress}{If TRUE, a progress bar is displayed. Defaults to TRUE.}
 
-\item{verbose}{If TRUE, will display the index of the search occuring. Defaults to false.}
+\item{verbose}{If TRUE, will display the index of the search occuring. Defaults to FALSE.}
 }
 \value{
 A dataframe with the literature scores.
@@ -34,20 +28,18 @@ The importance score is the total counts of articles in the pubmed
 database that are a result for that gene AND each term of a list
 }
 \examples{
-   gene <- 'CD4'
-   terms_of_interest <-
-     c(
-       "CD4 T cell",
-       "CD14+ Monocyte",
-       "B cell",
-       "CD8 T cell",
-       "FCGR3A+ Monocyte",
-       "NK cell",
-       "Dendritic cell",
-       "Megakaryocyte",
-       'immunity'
-     )
-   get_literature_score(gene, terms_of_interest, max_score = 500)
-   get_literature_score(gene, terms_of_interest, max_score = Inf)
-
+genes <- c('CD8', 'CD4')
+terms_of_interest <-
+  c(
+    "CD4 T cell",
+    "CD14+ Monocyte",
+    "B cell",
+    "CD8 T cell",
+    "FCGR3A+ Monocyte",
+    "NK cell",
+    "Dendritic cell",
+    "Megakaryocyte",
+    'immunity'
+  )
+get_literature_score(genes, terms_of_interest)
 }

@@ -8,8 +8,7 @@ plot_literature_score(plot_counts, return_ggplot = FALSE,
   is_plotly = FALSE)
 }
 \arguments{
-\item{plot_counts}{The dataframe returned as the second object ($counts) in the
-list output of get_literature_score function}
+\item{plot_counts}{The dataframe returned from the get_literature_score function}
 
 \item{return_ggplot}{If TRUE, returns a ggplot2 object instead of plotting. Defaults to FALSE.}
 
@@ -25,10 +24,11 @@ NOTE: the object has to be exactly the one returned by get_literature_score.R .
 Otherwise ggplot2 will not be able to identify the correct columns.
 }
 \examples{
- gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
- terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-                         "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
- literature_list <- PubScore::get_literature_score(gene, terms_of_interest, max_score = Inf)
- P <-plot_literature_score(literature_list$counts, return_ggplot = TRUE)
- ggplotly(P)
+  gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
+  terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
+                          "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
+  literature_counts <- get_literature_score(gene, terms_of_interest)
+  P <-plot_literature_score(literature_counts, return_ggplot = TRUE)
+  plot(P)
+  ggplotly(P)
 }

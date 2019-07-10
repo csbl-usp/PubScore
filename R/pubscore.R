@@ -51,8 +51,6 @@ setMethod('initialize', signature('PubScore'),
             return(.Object)
             
           })
-pub <- new(Class = "PubScore",genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
-
 #' Full PubScore analysis for visualization
 #' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance for
 #' @param genes A vector with multiple genes.
@@ -144,7 +142,7 @@ setMethod("networkViz", signature("PubScore"),
 #' @examples
 #' Create a new pubscore object
 #' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
-#' plot(test_score(pub))
+#' pub <- test_score(pub, total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),remove_ambiguous = T)
 #' @rdname test_score
 #' @export
 setGeneric("test_score", function(pub, total_genes,
@@ -224,7 +222,7 @@ setMethod("test_score", signature("PubScore"),
             }
             }
             })
-pub <- test_score(pub, remove_ambiguous = T)
+
 
 
 
