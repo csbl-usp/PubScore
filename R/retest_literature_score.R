@@ -40,25 +40,25 @@
 #' @return A dataframe with the literature scores.
 #' @export
 #' @examples
-#' 
-#' genes <- c('CD14')
-#' terms_of_interest <-
-#'   c(
-#'     "CD4 T cell",
-#'     "CD14+ Monocyte",
-#'     "B cell",
-#'     "CD8 T cell",
-#'     "FCGR3A+ Monocyte",
-#'     "NK cell",
-#'     "Dendritic cell",
-#'     "Megakaryocyte",
-#'     'immunity'
-#'   )
-#' literature_object <- PubScore::get_literature_score(genes, terms_of_interest)
-#' total_genes <- c('CD14','notagenemock1','notagenemock2','notagenemock3', "PROC", "IMPACT")
-#' literature_object <- test_literature_score(literature_object, total_genes, remove_ambiguous = FALSE)
-#' literature_object <- retest_literature_score(literature_object, remove_ambiguous = TRUE)
-#' 
+ 
+ genes <- c('CD14')
+ terms_of_interest <-
+   c(
+     "CD4 T cell",
+     "CD14+ Monocyte",
+     "B cell",
+     "CD8 T cell",
+     "FCGR3A+ Monocyte",
+     "NK cell",
+     "Dendritic cell",
+     "Megakaryocyte",
+     'immunity'
+   )
+ pub <- pubscore(genes, terms_of_interest)
+ total_genes <- c('CD14','notagenemock1','notagenemock2','notagenemock3', "PROC", "IMPACT")
+ literature_object <- test_literature_score(literature_object, total_genes, remove_ambiguous = FALSE)
+ literature_object <- retest_literature_score(literature_object, remove_ambiguous = TRUE)
+ 
 retest_literature_score <-
   function(literature_object,
            new_ambigous_term_list = FALSE,

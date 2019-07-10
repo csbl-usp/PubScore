@@ -7,8 +7,7 @@
 #' NOTE: the object has to be exactly the one returned by get_literature_score.R .
 #' Otherwise ggplot2 will not be able to identify the correct columns.
 #'
-#' @param plot_counts The dataframe returned as the second object ($counts) in the
-#' list output of get_literature_score function
+#' @param plot_counts The dataframe returned from the get_literature_score function
 #' @param return_ggplot If TRUE, returns a ggplot2 object instead of plotting. Defaults to FALSE.
 #' @param is_plotly If TRUE, a interactive plot is plotted in the place o static ggplot. Defaults to FALSE.
 #' @import ggplot2

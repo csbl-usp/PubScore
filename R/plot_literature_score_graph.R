@@ -3,8 +3,7 @@
 #'Plot a graph inspired in CEMiTool's graphs
 #'
 #'
-#' @param plot_counts The dataframe returned as the second object ($counts) in the
-#' list output of get_literature_score function
+#' @param plot_counts The dataframe returned from the get_literature_score function
 #' @param name The name of the plot.
 #' @param color The color of the plot. Defaults to a shade of red ("#B30000FF").
 #' @param n The max number of gene labels to show.  Defaults to 10.

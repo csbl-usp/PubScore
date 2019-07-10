@@ -1,23 +1,23 @@
-.getSimulation_test <- function(literature_object, ambiguous = c(), n_simulations) {
+.getSimulation_test <- function(pub, ambiguous = c(), n_simulations) {
   simulation_of_literature_null <-
-    literature_object$all_gene_combinations[!literature_object$all_gene_combinations$Gene %in% ambiguous, ]
+    pub@all_counts[!pub@all_counts$Genes %in% ambiguous, ]
   
-  n_genes <- length(levels(literature_object$counts$Gene[!literature_object$counts$Gene %in% ambiguous ]))
-  total_genes <- levels(droplevels(simulation_of_literature_null$Gene))
+  n_genes <- length(pub@genes[!pub@genes %in% ambiguous ])
+  total_genes <- levels(droplevels(simulation_of_literature_null$Genes))
   message(paste0('Running ', n_simulations,' simulations'))
   distribution_of_scores <- c()
   
   for (i in seq_len(n_simulations)) {
     genes_to_sample_now <- sample(total_genes, n_genes)
     simu_now <-
-      simulation_of_literature_null[simulation_of_literature_null$Gene %in% genes_to_sample_now, ]$count
+      simulation_of_literature_null[simulation_of_literature_null$Genes %in% genes_to_sample_now, ]$count
     list_score <- sum(simu_now) / n_genes
     distribution_of_scores <- c(distribution_of_scores, list_score)
     
   }
   
   distribution_of_scores <- data.frame(d = distribution_of_scores)
-  return(distribution_of_scores)
+  return(distribution_of_scores) 
   
 }
 
@@ -29,7 +29,7 @@
 #'
 #' gets a pvalue, by simulation, for a literature score.
 #'
-#' @param literature_object The object returned by the get_literature_score function
+#' @param literature_object The literature_object
 #' @param total_genes A list of all the possible genes in your study. 
 #' Usually all the names in the rows of an "exprs" object.
 #' @param show_progress If TRUE, a progress bar is displayed. Defaults to True.
