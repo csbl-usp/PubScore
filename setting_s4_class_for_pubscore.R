@@ -43,11 +43,60 @@ setMethod('initialize', signature('PubScore'),
             return(.Object)
             
           })
-pubscore <- new(Class = "PubScore",genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
+pub <- new(Class = "PubScore",genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
 
-library(plotly)
-ggplotly(pubscore@heatmap)
+#' Full PubScore analysis for visualization
+#' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance for
+#' @param genes A vector with multiple genes.
+#' 
+#' @return Object of class \code{PubScore}
+#' @export
 
+pubscore <- function(terms_of_interest, genes){
+   results <- new(Class = "PubScore", genes, terms_of_interest)
+   return(results)
+}
+
+#' Retrieve the heatmap attribute
+#' @param pub Object of class \code{PubScore}
+#' @return A "gg" object, from ggplot2, containing a heatmap from the counts table.
+#' @examples
+#' Create a new pubscore object
+#' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
+#' plot(heatmapViz(pub))
+
+#' @rdname heatmapViz
+#' @export
+setGeneric("heatmapViz", function(pub) {
+  standardGeneric("heatmapViz")
+})
+
+#' @rdname heatmapViz
+setMethod("heatmapViz", signature("PubScore"),
+          function(pub){
+            return(pub@heatmap)
+          })
+
+
+#' Retrieve the network attribute
+#' @param pub Object of class \code{PubScore}
+#' @return A "gg" object, from ggplot2, containing a network from the counts table.
+#' @examples
+#' Create a new pubscore object
+#' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
+#' plot(networkViz(pub))
+
+#' @rdname networkViz
+#' @export
+setGeneric("networkViz", function(pub) {
+  standardGeneric("networkViz")
+})
+
+#' @rdname networkViz
+setMethod("networkViz", signature("PubScore"),
+          function(pub){
+            return(pub@network)
+          })
 
 
 

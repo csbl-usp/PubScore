@@ -17,8 +17,8 @@
 #'   gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
 #'   terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
 #'                             "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#'   literature_list <- PubScore::get_literature_score(gene, terms_of_interest, max_score = Inf)
-#'   pl <- plot_literature_graph(literature_list$counts, name = 'test')
+#'   literature_counts <- get_literature_score(gene, terms_of_interest)
+#'   pl <- plot_literature_graph(literature_counts, name = 'test')
 #'   pl
  
 

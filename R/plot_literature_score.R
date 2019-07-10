@@ -17,15 +17,13 @@
 #' @return A ploty/ggplot2 object is either returned or directly plotted
 #' @export
 #' @examples
-  gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
-  terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-                          "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-  literature_counts <- get_literature_score(gene, terms_of_interest)
-  P <-plot_literature_score(literature_counts, return_ggplot = TRUE)
-  plot(P)
-  ggplotly(P)
-
-
+#'   gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
+#'   terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
+#'                           "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
+#'   literature_counts <- get_literature_score(gene, terms_of_interest)
+#'   P <-plot_literature_score(literature_counts, return_ggplot = TRUE)
+#'   plot(P)
+#'   ggplotly(P)
 
 plot_literature_score <-
   function(plot_counts,
@@ -71,7 +69,7 @@ plot_literature_score <-
       ) +
       scale_fill_manual(
         values = vls,
-        name = "Article counts",
+        name = "Article counts"
       ) 
     if (return_ggplot) {
       return(p)
