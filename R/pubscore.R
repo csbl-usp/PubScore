@@ -9,7 +9,6 @@ setOldClass('gtable')
 #' An S4 class to represent PubScore results
 #' @slot terms_of_interest A list of terms of interest related to the topic you want to find the relevance.
 #' @slot genes The genes to which you want to calculate and visualize the literature score.
-#' @slot max_score The max score to use when calculating literature scores
 #' @slot date The date when the object was initialized. PubScore counts will likely increase with time. 
 #' @slot counts A data frame with the counts retrieved on PubMed
 #' @slot network A visualization of the results found in a network
@@ -18,7 +17,6 @@ setClass(Class = 'PubScore',
          slots = list(genes="character",
                       terms_of_interest = "character",
                       literature_score = "numeric",
-                      max_score = "numeric",
                       date = "Date",
                       counts = "data.frame",
                       network = 'gg',
@@ -36,7 +34,6 @@ setMethod('initialize', signature('PubScore'),
              cts <- get_literature_score(genes, terms_of_interest)
             .Object@counts <- cts
             .Object@date <- Sys.Date()
-            .Object@max_score <- Inf
             .Object@heatmap <- plot_literature_score(cts,
                        return_ggplot = TRUE,
                        is_plotly = FALSE)
@@ -132,8 +129,6 @@ setMethod("networkViz", signature("PubScore"),
 #' @param pub Object of class \code{PubScore}
 #' @param total_genes A list of all the possible genes in your study. 
 #' Usually all the names in the rows of an "exprs" object.
-#' @param max_score Which score will be considered the maximum for a gene-term association. 
-#' Reduces the contribution of genes with large literature enrichment. Defaults to Inf.
 #' @param show_progress If TRUE, a progress bar is displayed. Defaults to True.
 #' @param verbose If TRUE, will display the index of the search occuring. Defaults to false.
 #' @param remove_ambiguous If TRUE, ambiguously named genes (such as "MARCH") will be removed. Defaults to TRUE.  
@@ -146,7 +141,6 @@ setMethod("networkViz", signature("PubScore"),
 #' @rdname test_score
 #' @export
 setGeneric("test_score", function(pub, total_genes,
-                                  max_score = Inf,
                                   show_progress = TRUE,
                                   remove_ambiguous = TRUE,
                                   verbose = FALSE,
@@ -157,7 +151,6 @@ setGeneric("test_score", function(pub, total_genes,
 #' @rdname test_score
 setMethod("test_score", signature("PubScore"),
           function(pub, total_genes,
-                   max_score = Inf,
                    show_progress = TRUE,
                    remove_ambiguous = TRUE,
                    verbose = FALSE,
@@ -188,7 +181,6 @@ setMethod("test_score", signature("PubScore"),
             simulation_of_literature_null <- simulation_of_literature_null[simulation_of_literature_null$i != "",]  
             pub@all_counts <- simulation_of_literature_null[,-1]
             } 
-            if (max_score == Inf){
             if (remove_ambiguous == FALSE){
               
               distribution_of_scores <- .getSimulation_test(pub, n_simulations = nsim)
@@ -219,7 +211,6 @@ setMethod("test_score", signature("PubScore"),
               print(pvalue) 
               pub@p_value <- pvalue
               return(pub)
-            }
             }
             })
 

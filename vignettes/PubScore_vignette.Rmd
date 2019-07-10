@@ -63,13 +63,11 @@ terms_of_interest <- c("B cells", "macrophages", "NK cells")
 ```
 
 
-First, let's observe the literature object produced by the function. 
+First, let's create a PubScore object 
 
 ```{r}
-literature_object <- PubScore::get_literature_score(selected_genes, terms_of_interest = terms_of_interest, is.list = TRUE)
-
-print('The score for the list is:')
-print(literature_object$list_literature_score)
+pub <- pubscore(genes, terms_of_interest )
+print(pub@literature_score)
 ```
 
 This score is the average number of articles for each gene x term combination of the list on PubMed. In the object we also have the date and a pre-set max_score. 

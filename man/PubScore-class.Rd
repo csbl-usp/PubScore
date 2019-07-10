@@ -14,8 +14,6 @@ An S4 class to represent PubScore results
 
 \item{\code{genes}}{The genes to which you want to calculate and visualize the literature score.}
 
-\item{\code{max_score}}{The max score to use when calculating literature scores}
-
 \item{\code{date}}{The date when the object was initialized. PubScore counts will likely increase with time.}
 
 \item{\code{counts}}{A data frame with the counts retrieved on PubMed}

@@ -6,21 +6,17 @@
 \alias{test_score,PubScore-method}
 \title{Get and test the literature enrichment score}
 \usage{
-test_score(pub, total_genes, max_score = Inf, show_progress = TRUE,
+test_score(pub, total_genes, show_progress = TRUE,
   remove_ambiguous = TRUE, verbose = FALSE, nsim = 1e+05)
 
-\S4method{test_score}{PubScore}(pub, total_genes, max_score = Inf,
-  show_progress = TRUE, remove_ambiguous = TRUE, verbose = FALSE,
-  nsim = 1e+05)
+\S4method{test_score}{PubScore}(pub, total_genes, show_progress = TRUE,
+  remove_ambiguous = TRUE, verbose = FALSE, nsim = 1e+05)
 }
 \arguments{
 \item{pub}{Object of class \code{PubScore}}
 
 \item{total_genes}{A list of all the possible genes in your study. 
 Usually all the names in the rows of an "exprs" object.}
-
-\item{max_score}{Which score will be considered the maximum for a gene-term association. 
-Reduces the contribution of genes with large literature enrichment. Defaults to Inf.}
 
 \item{show_progress}{If TRUE, a progress bar is displayed. Defaults to True.}
 
