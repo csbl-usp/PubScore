@@ -11,6 +11,9 @@
 
 \item{wait_time}{Time between searches}
 }
+\value{
+The rentrez search result (a list)
+}
 \description{
 Auxiliary function for getting the list score
 }

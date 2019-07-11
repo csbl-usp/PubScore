@@ -6,6 +6,16 @@
 \usage{
 .getSimulation_test(pub, ambiguous = c(), n_simulations)
 }
+\arguments{
+\item{pub}{An object of class \code{PubScore}}
+
+\item{ambiguous}{A character vector with possible ambiguous gene names}
+
+\item{n_simulations}{The number of simulations to run.}
+}
+\value{
+A data-frame with a simulation of literature scores for random samplings
+}
 \description{
 Auxiliary function for the test method
 }

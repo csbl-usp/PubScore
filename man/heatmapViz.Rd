@@ -20,7 +20,7 @@ A "gg" object, from ggplot2, containing a heatmap from the counts table.
 Retrieve the heatmap attribute
 }
 \examples{
-Create a new pubscore object
+#Create a new pubscore object
 pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
 plot(heatmapViz(pub))
 }

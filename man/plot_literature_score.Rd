@@ -15,7 +15,7 @@ plot_literature_score(plot_counts, return_ggplot = FALSE,
 \item{is_plotly}{If TRUE, a interactive plot is plotted in the place o static ggplot. Defaults to FALSE.}
 }
 \value{
-A ploty/ggplot2 object is either returned or directly plotted
+A ggplot2 object is either returned or directly plotted
 }
 \description{
 Plots a non-clusterized heatmap of the article counts for the combination of
@@ -30,5 +30,4 @@ Otherwise ggplot2 will not be able to identify the correct columns.
   literature_counts <- get_literature_score(gene, terms_of_interest)
   P <-plot_literature_score(literature_counts, return_ggplot = TRUE)
   plot(P)
-  ggplotly(P)
 }

@@ -49,9 +49,7 @@ However, you are implementing a novel method, and you are not sure if the method
   1 - Decide if the method is indeed working by searching the literature.
   2 - Fish out of the many genes, the ones that you want to focus your research effort on. 
   
-```{r}
-remotes::install_github('lubianat/FCBF')
-remotes::install_github('lubianat/PubScore')
+```{r Initialization}
 library(PubScore)
 # list of genes :
 selected_genes <- c('CD79A', 'CD14', 'NKG7', 'CST3', 'AIF1')
@@ -65,9 +63,9 @@ terms_of_interest <- c("B cells", "macrophages", "NK cells")
 
 First, let's create a PubScore object 
 
-```{r}
+```{r Creating PubScore Object}
 pub <- pubscore(terms_of_interest = terms_of_interest, genes = selected_genes )
-print(score(pub))
+print(getScore(pub))
 ```
 
 This score is the average number of articles for each gene x term combination of the list on PubMed. In the object we also have many other attributes, but let's keep then for later. 
@@ -77,7 +75,7 @@ The number does not mean much. Higher values mean that the genes are more associ
 For this, we need the list of all genes that could have been selected. This was assigned above to the variable total_genes
 
 
-```{r}
+```{r Testing the Pubscore Object}
 pub <- test_score(pub, total_genes =  total_genes)
 
 ```
@@ -86,7 +84,7 @@ It seems that this list is indeed enriched for genes related to these terms.
 How surprising! (not really, it was built in that way). 
 Let's look at the interactive heatmap and understand better the relation of these genes and these terms. 
 
-```{r}
+```{r Heatmap Visualization}
 p <- heatmapViz(pub)
 library(plotly)
 ggplotly(p)
@@ -99,7 +97,7 @@ The heatmap makes it clear that CD79 is associated in the literature with B cell
 
 If you want to explore a bit more, there is also a network visualization:
 
-```{r}
+```{r Netowrk Visualization}
 p <- networkViz(pub)
 plot(p)
 ```
@@ -124,7 +122,7 @@ Let's run the FCBF algorithm to select genes that might be relevant
 to understand
 
 
-```{r}
+```{r Running FCBF}
 infection <- SummarizedExperiment::colData(scDengue)
 target <- infection$infection
 
@@ -143,7 +141,7 @@ The scDengue dataset is using Ensemble IDs, and usually papers use gene symbols
 
 This is important, as PubScore will search for the genes on pubmed EXACTLY as they are on your vector. The package biomaRt can be used to fix this, as it contains the reference databases we need. 
 
-```{r}
+```{r Running biomaRt}
 library(biomaRt)
 
 ensembl = useMart("ensembl",dataset="hsapiens_gene_ensembl")
@@ -179,7 +177,7 @@ After getting the literature object from the get_literature score function,  we 
 terms_of_interest <- c('Dengue')
 
 pub <- pubscore(terms_of_interest = terms_of_interest, genes = fcbf_genes )
-print(score(pub))
+print(getScore(pub))
 
 p_map <- heatmapViz(pub)
 library(plotly)
@@ -209,7 +207,7 @@ It is commented out of the code because of that, but feel free to run it.
 ```{r} 
 
 #' pub <- test_score(pub, total_genes = total_genes)
-#' all_counts <- pub@all_counts
+#' all_counts <- AllCounts(pub)
 #' save(all_counts, file= '../data/all_counts.RData')
 data("all_counts")
 pub@all_counts <- all_counts
@@ -220,7 +218,7 @@ We will re-do the p-value estimation just to be really clear about how it is don
 ```{r}
 
 # A table with all possible combinations is generated
-simulation_of_literature_null <- pub@all_counts
+simulation_of_literature_null <- AllCounts(pub)
 
 # Then, a number of genes equal to your original list is picked
 # and, from this list, we get a score.
@@ -243,7 +241,7 @@ simulation_of_literature_null <- pub@all_counts
     distribution_of_scores<- data.frame(d = distribution_of_scores)
     
     # The score to compare is the one of the original list  
-    score <- score(pub)
+    score <- getScore(pub)
       
     # Then you ask: how many of the null simulations had a score
     # as high as the one of the original list?
@@ -267,7 +265,8 @@ Let's look at the top genes associated with Dengue in the literature, in the lit
 
 
 ```{r}
-head(pub@all_counts$Genes[order(pub@all_counts$count, decreasing = TRUE)], 10)
+all_counts <- AllCounts(pub)
+head(all_counts$Genes[order(all_counts$count, decreasing = TRUE)], 10)
 ```
 
 

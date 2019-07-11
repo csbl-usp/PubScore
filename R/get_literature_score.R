@@ -1,10 +1,9 @@
-
-
 #' .query_pubmed
 #'
 #' Auxiliary function for getting the list score
 #' @param search_topic Item to search on PubMed via rentrez
 #' @param wait_time Time between searches
+#' @return The rentrez search result (a list)
 .query_pubmed <- function (search_topic, wait_time = 0) {
   out <- tryCatch({
     s <- rentrez::entrez_search(

@@ -7,10 +7,24 @@
 \title{Get and test the literature enrichment score}
 \usage{
 test_score(pub, total_genes, show_progress = TRUE,
-  remove_ambiguous = TRUE, verbose = FALSE, nsim = 1e+05)
+  remove_ambiguous = TRUE, verbose = FALSE, nsim = 1e+05,
+  ambiguous_terms = c("PC", "JUN", "IMPACT", "ACHE", "SRI", "SET", "CS",
+  "PROC", "MET", "SHE", "CAD", "DDT", "PIGS", "SARS", "REST", "GC", "CP",
+  "STAR", "SI", "GAN", "MARS", "SDS", "AGA", "NHS", "CPE", "POR", "MAX",
+  "CAT", "LUM", "ANG", "POLE", "CLOCK", "TANK", "ITCH", "SDS", "AES",
+  "CIC", "FST", "CAPS", "COPE", "F2", "AFM", "SPR", "PALM", "C2", "BAD",
+  "GPI", "CA2", "SMS", "INVS", "WARS", "HP", "GAL", "SON", "AFM", "BORA",
+  "MBP", "MAK", "MALL", "COIL", "CAST "))
 
 \S4method{test_score}{PubScore}(pub, total_genes, show_progress = TRUE,
-  remove_ambiguous = TRUE, verbose = FALSE, nsim = 1e+05)
+  remove_ambiguous = TRUE, verbose = FALSE, nsim = 1e+05,
+  ambiguous_terms = c("PC", "JUN", "IMPACT", "ACHE", "SRI", "SET", "CS",
+  "PROC", "MET", "SHE", "CAD", "DDT", "PIGS", "SARS", "REST", "GC", "CP",
+  "STAR", "SI", "GAN", "MARS", "SDS", "AGA", "NHS", "CPE", "POR", "MAX",
+  "CAT", "LUM", "ANG", "POLE", "CLOCK", "TANK", "ITCH", "SDS", "AES",
+  "CIC", "FST", "CAPS", "COPE", "F2", "AFM", "SPR", "PALM", "C2", "BAD",
+  "GPI", "CA2", "SMS", "INVS", "WARS", "HP", "GAL", "SON", "AFM", "BORA",
+  "MBP", "MAK", "MALL", "COIL", "CAST "))
 }
 \arguments{
 \item{pub}{Object of class \code{PubScore}}
@@ -33,7 +47,7 @@ A "gg" object, from ggplot2, containing a network from the counts table.
 Get and test the literature enrichment score
 }
 \examples{
-Create a new pubscore object
+# Create a new pubscore object
 pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
 pub <- test_score(pub, total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),remove_ambiguous = T)
 }

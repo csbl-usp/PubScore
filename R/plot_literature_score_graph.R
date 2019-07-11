@@ -26,6 +26,7 @@ plot_literature_graph <-
            name,
            color = "#B30000FF",
            n = 10) {
+    plot_counts <- plot_counts[plot_counts$count > 0,]
     ig_obj <- igraph::graph.data.frame(plot_counts)
     sum_of_weights1 <-
       plot_counts %>% group_by(Genes) %>%   summarise(Weight = sum(count))
@@ -79,7 +80,7 @@ plot_literature_graph <-
     plotcord[, "Type"] <- ""
     
     max_n <- min(n, sum(names(sumwts) %in% plot_counts$Genes))
-    int_hubs <- names(sort(sumwts, decreasing = TRUE))[1:max_n]
+    int_hubs <- names(sort(sumwts, decreasing = TRUE))[seq_len(max_n)]
     int_bool <- plotcord[, "vertex.names"] %in% int_hubs
     plotcord[which(plotcord$vertex.names %in% plot_counts$Genes), "Type"] <-
       "Gene"
@@ -87,7 +88,7 @@ plot_literature_graph <-
       "Topic"
     mod_genes <- names(sumwts[names(sumwts) %in% plot_counts$Genes])
     sel_genes <-
-      names(sort(sumwts[names(sumwts) %in% plot_counts$Genes], decreasing = TRUE))[1:max_n]
+      names(sort(sumwts[names(sumwts) %in% plot_counts$Genes], decreasing = TRUE))[seq_len(max_n)]
     sel_vertex <-
       c(sel_genes, names(sumwts[names(sumwts) %in% plot_counts$Topic]))
     colnames(edges) <-  c("X1", "Y1", "X2", "Y2")

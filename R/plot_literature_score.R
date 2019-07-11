@@ -11,9 +11,8 @@
 #' @param return_ggplot If TRUE, returns a ggplot2 object instead of plotting. Defaults to FALSE.
 #' @param is_plotly If TRUE, a interactive plot is plotted in the place o static ggplot. Defaults to FALSE.
 #' @import ggplot2
-#' @import plotly
 #' @import graphics
-#' @return A ploty/ggplot2 object is either returned or directly plotted
+#' @return A ggplot2 object is either returned or directly plotted
 #' @export
 #' @examples
 #'   gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
@@ -22,7 +21,6 @@
 #'   literature_counts <- get_literature_score(gene, terms_of_interest)
 #'   P <-plot_literature_score(literature_counts, return_ggplot = TRUE)
 #'   plot(P)
-#'   ggplotly(P)
 
 plot_literature_score <-
   function(plot_counts,

@@ -1,6 +1,6 @@
 #' @import rentrez
 #' @import progress
-library(dplyr)
+#' @import dplyr
 
 setOldClass('gg')
 setOldClass('ggplot')
@@ -28,7 +28,7 @@ setClass(Class = 'PubScore',
 
 setMethod('initialize', signature('PubScore'),
           function(.Object, genes, terms_of_interest){
-            cat("~~~ Initializing PubScore ~~~ \n")
+            cat("~~~ Initializing PubScore Object ~~~ \n")
             .Object@genes <- genes
             .Object@terms_of_interest <- terms_of_interest  
              cts <- get_literature_score(genes, terms_of_interest)
@@ -64,10 +64,9 @@ pubscore <- function(terms_of_interest, genes){
 #' @param pub Object of class \code{PubScore}
 #' @return A "gg" object, from ggplot2, containing a heatmap from the counts table.
 #' @examples
-#' Create a new pubscore object
+#' #Create a new pubscore object
 #' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
 #' plot(heatmapViz(pub))
-
 #' @rdname heatmapViz
 #' @export
 setGeneric("heatmapViz", function(pub) {
@@ -85,10 +84,9 @@ setMethod("heatmapViz", signature("PubScore"),
 #' @param pub Object of class \code{PubScore}
 #' @return A "gg" object, from ggplot2, containing a network from the counts table.
 #' @examples
-#' Create a new pubscore object
+#' # Create a new pubscore object
 #' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
 #' plot(networkViz(pub))
-
 #' @rdname networkViz
 #' @export
 setGeneric("networkViz", function(pub) {
@@ -104,25 +102,47 @@ setMethod("networkViz", signature("PubScore"),
 
 #' Retrieve the literature_score attribute
 #' @param pub Object of class \code{PubScore}
-#' @return A "gg" object, from ggplot2, containing a network from the counts table.
+#' @return A "numeric" with the literature score for this gene x term combination
 #' @examples
-#' Create a new pubscore object
+#' # Create a new pubscore object
 #' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
 #' plot(networkViz(pub))
-
-#' @rdname networkViz
+#' @rdname getScore
 #' @export
-setGeneric("score", function(pub) {
-  standardGeneric("score")
+setGeneric("getScore", function(pub) {
+  standardGeneric("getScore")
 })
 
-#' @rdname networkViz
-setMethod("score", signature("PubScore"),
+#' @rdname getScore
+setMethod("getScore", signature("PubScore"),
           function(pub){
             return(pub@literature_score)
           })
 
+#' Retrieve the all_counts attribute
+#' @param pub Object of class \code{PubScore}
+#' @return A dataframe containing the counts table for all genes.
+#' @examples
+#' # Create a new pubscore object
+#' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
+#' plot(networkViz(pub))
+#' @rdname AllCounts
+#' @export
+setGeneric("AllCounts", function(pub, ...) {
+  standardGeneric("AllCounts")
+})
+
+#' @rdname AllCounts
+setMethod("AllCounts", signature("PubScore"),
+          function(pub){
+            return(pub@all_counts)
+          })
+
 #' Auxiliary function for the test method 
+#' @param pub An object of class \code{PubScore}
+#' @param ambiguous A character vector with possible ambiguous gene names
+#' @param n_simulations The number of simulations to run.
+#' @return A data-frame with a simulation of literature scores for random samplings
 .getSimulation_test <- function(pub, ambiguous = c(), n_simulations) {
   simulation_of_literature_null <-
     pub@all_counts[!pub@all_counts$Genes %in% ambiguous, ]
@@ -156,16 +176,23 @@ setMethod("score", signature("PubScore"),
 #' @param nsim The number of simulations to run. Defaults to 100000.
 #' @return A "gg" object, from ggplot2, containing a network from the counts table.
 #' @examples
-#' Create a new pubscore object
+#' # Create a new pubscore object
 #' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
-#' pub <- test_score(pub, total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),remove_ambiguous = T)
+#' pub <- test_score(pub, total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),remove_ambiguous = TRUE)
 #' @rdname test_score
 #' @export
 setGeneric("test_score", function(pub, total_genes,
                                   show_progress = TRUE,
                                   remove_ambiguous = TRUE,
                                   verbose = FALSE,
-                                  nsim = 100000) {
+                                  nsim = 100000,
+                                  ambiguous_terms = c("PC", "JUN", "IMPACT", "ACHE", "SRI", "SET", "CS", "PROC", 
+                                                      "MET", "SHE", "CAD", "DDT", "PIGS", "SARS", "REST", "GC", "CP", 
+                                                      "STAR", "SI", "GAN", "MARS", "SDS", "AGA", "NHS", "CPE", "POR", 
+                                                      "MAX", "CAT", "LUM", "ANG", "POLE", "CLOCK", "TANK", "ITCH", 
+                                                      "SDS", "AES", "CIC", "FST", "CAPS", "COPE", "F2", "AFM", "SPR", 
+                                                      "PALM", "C2", "BAD", "GPI", "CA2", "SMS", "INVS", "WARS", "HP", 
+                                                      "GAL", "SON", "AFM", "BORA", "MBP", "MAK", "MALL", "COIL", "CAST ")) {
   standardGeneric("test_score")
 })
 
@@ -175,7 +202,14 @@ setMethod("test_score", signature("PubScore"),
                    show_progress = TRUE,
                    remove_ambiguous = TRUE,
                    verbose = FALSE,
-                   nsim = 100000){
+                   nsim = 100000,
+                   ambiguous_terms = c("PC", "JUN", "IMPACT", "ACHE", "SRI", "SET", "CS", "PROC", 
+                                        "MET", "SHE", "CAD", "DDT", "PIGS", "SARS", "REST", "GC", "CP", 
+                                        "STAR", "SI", "GAN", "MARS", "SDS", "AGA", "NHS", "CPE", "POR", 
+                                        "MAX", "CAT", "LUM", "ANG", "POLE", "CLOCK", "TANK", "ITCH", 
+                                        "SDS", "AES", "CIC", "FST", "CAPS", "COPE", "F2", "AFM", "SPR", 
+                                        "PALM", "C2", "BAD", "GPI", "CA2", "SMS", "INVS", "WARS", "HP", 
+                                        "GAL", "SON", "AFM", "BORA", "MBP", "MAK", "MALL", "COIL", "CAST ")){
             
             terms_of_interest <- pub@terms_of_interest
             genes_to_sample <- pub@genes
@@ -216,14 +250,6 @@ setMethod("test_score", signature("PubScore"),
             
             
             if (remove_ambiguous == TRUE){
-              ambiguous_terms <- c("PC", "JUN", "IMPACT", "ACHE", "SRI", "SET", "CS", "PROC", 
-                                   "MET", "SHE", "CAD", "DDT", "PIGS", "SARS", "REST", "GC", "CP", 
-                                   "STAR", "SI", "GAN", "MARS", "SDS", "AGA", "NHS", "CPE", "POR", 
-                                   "MAX", "CAT", "LUM", "ANG", "POLE", "CLOCK", "TANK", "ITCH", 
-                                   "SDS", "AES", "CIC", "FST", "CAPS", "COPE", "F2", "AFM", "SPR", 
-                                   "PALM", "C2", "BAD", "GPI", "CA2", "SMS", "INVS", "WARS", "HP", 
-                                   "GAL", "SON", "AFM", "BORA", "MBP", "MAK", "MALL", "COIL", "CAST ")
-              
               distribution_of_scores <- .getSimulation_test(pub, ambiguous =  ambiguous_terms, n_simulations = nsim)
               score <- pub@literature_score
               pvalue <-sum(distribution_of_scores[,1] >= score)/length(distribution_of_scores[,1])
