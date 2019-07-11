@@ -49,5 +49,5 @@ Get and test the literature enrichment score
 \examples{
 # Create a new pubscore object
 pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
-pub <- test_score(pub, total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),remove_ambiguous = T)
+pub <- test_score(pub, total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),remove_ambiguous = TRUE)
 }

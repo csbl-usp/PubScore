@@ -48,6 +48,33 @@ setMethod('initialize', signature('PubScore'),
             return(.Object)
             
           })
+
+setMethod('show',
+          signature = 'PubScore',
+          definition = function(object){
+            cat("An object of class ", class(object), "\n", sep = "")
+            cat(" - Number of genes: ", length(object@genes), "\n", sep = "" )
+            if (length(object@genes) < 6){
+              cat(object@genes, sep = ", " )
+              cat('\n')
+            } else {
+              cat(object@genes[1:5], sep = ", " )
+              cat(" and other ", (length(object@genes)-5), " more.", "\n")
+            }
+            cat(" - Number of terms of interest: ", length(object@terms_of_interest), "\n", sep = "" )
+            if (length(object@terms_of_interest) < 6){
+              cat(object@terms_of_interest, sep = ", " )
+              cat('\n')
+            } else {
+              cat(object@terms_of_interest[1:5], sep = ", " )
+              cat(" and other ", (length(object@terms_of_interest)-5), " more.", "\n")
+            }
+            if (nrow(pub@all_counts) == 0){
+            cat("- P-value for association: ", " Not calculated. Run 'test_score' to get one.",  "\n", sep = "")
+            } else {
+             cat("- P-value for association: ", object@p_value ,", estimated by simulation.",  "\n", sep = "")
+            }
+          })
 #' Full PubScore analysis for visualization
 #' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance for
 #' @param genes A vector with multiple genes.
