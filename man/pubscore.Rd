@@ -2,7 +2,7 @@
 % Please edit documentation in R/pubscore.R
 \name{pubscore}
 \alias{pubscore}
-\title{Full PubScore analysis for visualization}
+\title{PubScore fundamental analysis}
 \usage{
 pubscore(terms_of_interest, genes)
 }
@@ -15,5 +15,5 @@ pubscore(terms_of_interest, genes)
 Object of class \code{PubScore}
 }
 \description{
-Full PubScore analysis for visualization
+Runs the initalization and the basic functions for querying pubmed and getting the literature scores.
 }

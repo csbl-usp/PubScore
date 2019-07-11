@@ -3,9 +3,10 @@
 \docType{class}
 \name{PubScore-class}
 \alias{PubScore-class}
-\title{An S4 class to represent PubScore results}
+\title{SECTION 1 - THE PUBSCORE CLASS
+An S4 class to represent PubScore results}
 \description{
-An S4 class to represent PubScore results
+The S4 class to PubScore and its basic initializate and show methods.
 }
 \section{Slots}{
 

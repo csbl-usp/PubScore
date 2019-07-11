@@ -4,17 +4,10 @@
 \name{test_score}
 \alias{test_score}
 \alias{test_score,PubScore-method}
-\title{Get and test the literature enrichment score}
+\title{SECTION 3 - ADDITIONAL METHODS
+Test the literature enrichment score}
 \usage{
-test_score(pub, total_genes, show_progress = TRUE,
-  remove_ambiguous = TRUE, verbose = FALSE, nsim = 1e+05,
-  ambiguous_terms = c("PC", "JUN", "IMPACT", "ACHE", "SRI", "SET", "CS",
-  "PROC", "MET", "SHE", "CAD", "DDT", "PIGS", "SARS", "REST", "GC", "CP",
-  "STAR", "SI", "GAN", "MARS", "SDS", "AGA", "NHS", "CPE", "POR", "MAX",
-  "CAT", "LUM", "ANG", "POLE", "CLOCK", "TANK", "ITCH", "SDS", "AES",
-  "CIC", "FST", "CAPS", "COPE", "F2", "AFM", "SPR", "PALM", "C2", "BAD",
-  "GPI", "CA2", "SMS", "INVS", "WARS", "HP", "GAL", "SON", "AFM", "BORA",
-  "MBP", "MAK", "MALL", "COIL", "CAST "))
+test_score(pub, total_genes, ...)
 
 \S4method{test_score}{PubScore}(pub, total_genes, show_progress = TRUE,
   remove_ambiguous = TRUE, verbose = FALSE, nsim = 1e+05,
@@ -29,7 +22,7 @@ test_score(pub, total_genes, show_progress = TRUE,
 \arguments{
 \item{pub}{Object of class \code{PubScore}}
 
-\item{total_genes}{A list of all the possible genes in your study. 
+\item{total_genes}{A list of all the possible genes in your study.
 Usually all the names in the rows of an "exprs" object.}
 
 \item{show_progress}{If TRUE, a progress bar is displayed. Defaults to True.}
@@ -44,7 +37,8 @@ Usually all the names in the rows of an "exprs" object.}
 A "gg" object, from ggplot2, containing a network from the counts table.
 }
 \description{
-Get and test the literature enrichment score
+SECTION 3 - ADDITIONAL METHODS
+Test the literature enrichment score
 }
 \examples{
 # Create a new pubscore object
