@@ -4,12 +4,14 @@
 \alias{.query_pubmed}
 \title{.query_pubmed}
 \usage{
-.query_pubmed(search_topic, wait_time = 0)
+.query_pubmed(search_topic, wait_time = 0, ret_max = 1)
 }
 \arguments{
 \item{search_topic}{Item to search on PubMed via rentrez}
 
 \item{wait_time}{Time between searches}
+
+\item{ret_max}{Number of IDs to be returned. Defaults to 1.}
 }
 \value{
 The rentrez search result (a list)

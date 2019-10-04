@@ -17,6 +17,8 @@ The S4 class to PubScore and its basic initializate and show methods.
 
 \item{\code{date}}{The date when the object was initialized. PubScore counts will likely increase with time.}
 
+\item{\code{gene2pubmed}}{Boolean noting if gene to pubmed was used or not.}
+
 \item{\code{counts}}{A data frame with the counts retrieved on PubMed}
 
 \item{\code{network}}{A visualization of the results found in a network}

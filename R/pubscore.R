@@ -15,6 +15,7 @@ setOldClass('gtable')
 #' @slot terms_of_interest A list of terms of interest related to the topic you want to find the relevance.
 #' @slot genes The genes to which you want to calculate and visualize the literature score.
 #' @slot date The date when the object was initialized. PubScore counts will likely increase with time.
+#' @slot gene2pubmed Boolean noting if gene to pubmed was used or not.
 #' @slot counts A data frame with the counts retrieved on PubMed
 #' @slot network A visualization of the results found in a network
 #' @slot heatmap A visualization of the results found in a heatmap
@@ -30,18 +31,32 @@ setClass(
     heatmap = 'gg',
     all_counts = "data.frame",
     total_genes = "character",
-    p_value = "numeric"
+    p_value = "numeric",
+    gene2pubmed = "logical"
   )
 )
 
-
+#'initialize
+#'
+#'@param gene2pubmed Boolean defining if gene2pubmed db is going to be used.
 setMethod('initialize', signature('PubScore'),
-          function(.Object, genes, terms_of_interest) {
+          function(.Object, genes, terms_of_interest, gene2pubmed = FALSE) {
             cat("~~~ Initializing PubScore Object ~~~ \n")
             .Object@genes <- genes
             .Object@terms_of_interest <- terms_of_interest
-            cts <- get_literature_score(genes, terms_of_interest)
-            .Object@counts <- cts
+            
+            if (gene2pubmed){
+              cts <- get_literature_score(genes, terms_of_interest, gene2pubmed = gene2pubmed)
+              all_counts <- get_literature_score(genes, terms_of_interest, gene2pubmed = gene2pubmed, return_all = TRUE)
+              
+              .Object@all_counts <- all_counts
+              
+            } else{
+              cts <- get_literature_score(genes, terms_of_interest)
+              .Object@counts <- cts
+              .Object@all_counts <- data.frame()
+            }
+
             .Object@date <- Sys.Date()
             .Object@heatmap <- plot_literature_score(cts,
                                                      return_ggplot = TRUE,
@@ -52,8 +67,8 @@ setMethod('initialize', signature('PubScore'),
                                                      n = 10)
             .Object@literature_score <-
               sum(cts$count) / (length(genes) * length(terms_of_interest))
-            .Object@all_counts <- data.frame()
             .Object@total_genes <- 'empty'
+            .Object@gene2pubmed <- gene2pubmed
             .Object@p_value <- Inf
             return(.Object)
             
