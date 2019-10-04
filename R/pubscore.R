@@ -344,6 +344,9 @@ setMethod("test_score", signature("PubScore"),
                      "COIL",
                      "CAST "
                    )) {
+            if (pub@gene2pubmed){
+              stop("Test score not available when gene2pubmed is used... yet!")
+            }
             terms_of_interest <- pub@terms_of_interest
             genes_to_sample <- pub@genes
             simulation_of_literature_null <- data.frame(2, 2, 2)
