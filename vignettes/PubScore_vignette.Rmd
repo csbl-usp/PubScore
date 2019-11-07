@@ -70,7 +70,7 @@ print(getScore(pub))
 
 This score is the average number of articles for each gene x term combination of the list on PubMed. In the object we also have many other attributes, but let's keep then for later. 
 
-The number does not mean much. Higher values mean that the genes are more associated to the terms. But, what is the score I expect by chance? Let's run a permutation test to estimate this p-value.
+The number does not mean much. Higher values mean that the genes are more associated to the terms. But, what is the score I would expect by chance? Let's run a permutation test to estimate this p-value.
 
 For this, we need the list of all genes that could have been selected. This was assigned above to the variable total_genes
 
@@ -118,9 +118,8 @@ library('SingleCellExperiment')
 data(scDengue)
 ```
 
-Let's run the FCBF algorithm to select genes that might be relevant 
-to understand
-
+Let's run the FCBF algorithm to select genes that are relevant 
+to split the infected from the control cells.
 
 ```{r Running FCBF}
 infection <- SummarizedExperiment::colData(scDengue)
@@ -271,6 +270,8 @@ head(all_counts$Genes[order(all_counts$count, decreasing = TRUE)], 10)
 
 
 Hm there are clearly problems with these genes... they are ambiguous!
+PC is a Personal Computer, JUN is June, IMPACT and ACHE are words.
+
 We will have to blacklist a few genes to avoid these outliers. 
 After some digging, I manually selected this list of ambiguously named genes.
 
@@ -295,13 +296,13 @@ The pvalue after removing the noise is around 0.04. It will oscilate slightly ev
 
 I'd like to point that the threshold of 95% is rather arbitrary and there is a big movement to reject the hard definition of statistical significance.
 
-In this case, the p-value is even shorter than the old-fashioned 0.05, so I can say confidently that the list returned by FCBF is more related to the "Dengue" term" than expected by chance. 
+Anywaysm in this case, the p-value is even shorter than the old-fashioned 0.05, so I can say confidently that the list returned by FCBF is more related to the "Dengue" term" than expected by chance. 
 
-To finish this vignett, if you want to select your own list of ambiguously named genes, you can do so in the retest function. 
+To finish this vignettE, if you want to select your own list of ambiguously named genes, you can do so in the retest function. 
 
 ```{r}
-retested_literature_object <- test_score(literature_object, 
-                                                      new_ambigous_term_list = 
+retested_literature_object <- test_score(pub, remove_ambiguous = TRUE,
+                                                      ambiguous_terms = 
                                                       c("PC", "JUN", "IMPACT"), nsim = 10000)
 
 ```
