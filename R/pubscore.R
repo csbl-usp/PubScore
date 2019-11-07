@@ -123,12 +123,12 @@ setMethod(
 #'
 #' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance for
 #' @param genes A vector with multiple genes.
-#'
+#' @param gene2pubmed Boolean defining if gene2pubmed db is going to be used. Defaults to FALSE.
 #' @return Object of class \code{PubScore}
 #' @export
 
-pubscore <- function(terms_of_interest, genes) {
-  results <- new(Class = "PubScore", genes, terms_of_interest)
+pubscore <- function(terms_of_interest, genes, gene2pubmed = FALSE) {
+  results <- new(Class = "PubScore", genes, terms_of_interest, gene2pubmed)
   return(results)
 }
 

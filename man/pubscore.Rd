@@ -4,12 +4,14 @@
 \alias{pubscore}
 \title{PubScore fundamental analysis}
 \usage{
-pubscore(terms_of_interest, genes)
+pubscore(terms_of_interest, genes, gene2pubmed = FALSE)
 }
 \arguments{
 \item{terms_of_interest}{A list of terms of interest related to the topic you want to find the relevance for}
 
 \item{genes}{A vector with multiple genes.}
+
+\item{gene2pubmed}{Boolean defining if gene2pubmed db is going to be used. Defaults to FALSE.}
 }
 \value{
 Object of class \code{PubScore}

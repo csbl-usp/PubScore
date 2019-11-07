@@ -197,7 +197,7 @@ Qualitatetively, it seems that indeed some of these genes are already related to
 But how many Dengue-related genes would I expect by chance alone?
 
 For this, we need to estimate the null distribution of the scores by randomly selecting
-genes. That is the goal of the 'test_literature_score' function. 
+genes. That is the goal of the 'test_score' function. 
 
 WARNING: This functions takes 6 hours to run. That is because a lot of requests are made to
 pubmed. We ran it and made the final output available here so you don't need it. 
