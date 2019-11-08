@@ -3,8 +3,7 @@
 \docType{class}
 \name{PubScore-class}
 \alias{PubScore-class}
-\title{SECTION 1 - THE PUBSCORE CLASS
-An S4 class to represent PubScore results}
+\title{An S4 class to represent PubScore results}
 \description{
 The S4 class to PubScore and its basic initializate and show methods.
 }

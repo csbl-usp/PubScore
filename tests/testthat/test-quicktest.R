@@ -38,8 +38,9 @@ test_that("test literature  score works when removing ambiguous terms", {
   pub <- test_score(pub, total_genes =  total_genes, remove_ambiguous = T, nsim = 1e4)
   p1 <- pub@p_value
   expect_that(pub@p_value, is_less_than(0.01))
-  pub <- test_score(pub, total_genes =  total_genes, remove_ambiguous = T, ambiguous_terms = c("SHE"), nsim = 1e4)
-  expect_that(pub@p_value, is_less_than(0.01))
+  pub <- test_score(pub, total_genes =  total_genes, remove_ambiguous = T, ambiguous_terms = c('PC', "ACHE", "IMPACT"), nsim = 1e4)
+  expect_that(pub@p_value, is_less_than(0.2))
+  expect_that(pub@p_value, is_more_than(0.05))
 })
 
 

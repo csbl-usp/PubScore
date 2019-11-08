@@ -4,8 +4,7 @@
 \name{heatmapViz}
 \alias{heatmapViz}
 \alias{heatmapViz,PubScore-method}
-\title{SECTION 2 - METHODS TO RETRIEVE ATTRIBUTES
-Retrieve the heatmap attribute}
+\title{Retrieve the heatmap attribute}
 \usage{
 heatmapViz(pub)
 
@@ -18,7 +17,6 @@ heatmapViz(pub)
 A "gg" object, from ggplot2, containing a heatmap from the counts table.
 }
 \description{
-SECTION 2 - METHODS TO RETRIEVE ATTRIBUTES
 Retrieve the heatmap attribute
 }
 \examples{
