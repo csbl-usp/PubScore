@@ -6,7 +6,7 @@ setOldClass('gg')
 setOldClass('ggplot')
 setOldClass('gtable')
 
-#' SECTION 1 - THE PUBSCORE CLASS
+####### SECTION 1 - THE PUBSCORE CLASS  #######
 
 
 #' An S4 class to represent PubScore results
@@ -133,7 +133,7 @@ pubscore <- function(terms_of_interest, genes, gene2pubmed = FALSE) {
 }
 
 
-#' SECTION 2 - METHODS TO RETRIEVE ATTRIBUTES
+####### SECTION 2 - METHODS TO RETRIEVE ATTRIBUTES  #######
 
 
 #' Retrieve the heatmap attribute
@@ -150,6 +150,7 @@ pubscore <- function(terms_of_interest, genes, gene2pubmed = FALSE) {
 setGeneric("heatmapViz", function(pub) {
   standardGeneric("heatmapViz")
 })
+
 #' @rdname heatmapViz
 setMethod("heatmapViz", signature("PubScore"),
           function(pub) {
@@ -249,7 +250,7 @@ setMethod("AllCounts", signature("PubScore"),
     
   }
 
-#' SECTION 3 - ADDITIONAL METHODS
+#######  SECTION 3 - ADDITIONAL METHODS ####### 
 
 #' Test the literature enrichment score
 #' 
@@ -260,6 +261,8 @@ setMethod("AllCounts", signature("PubScore"),
 #' @param verbose If TRUE, will display the index of the search occuring. Defaults to false.
 #' @param remove_ambiguous If TRUE, ambiguously named genes (such as "MARCH") will be removed. Defaults to TRUE.
 #' @param nsim The number of simulations to run. Defaults to 100000.
+#' @param ambiguous_terms A character vector of the ambiguous terms to use instead of the default. 
+#' The default includes 60 genes pre-selected as ambiguous (as IMPACT, MARCH and ACHE).
 #' @return A "gg" object, from ggplot2, containing a network from the counts table.
 #' @examples
 #' # Create a new pubscore object

@@ -90,6 +90,7 @@ get_literature_score <-
   function(genes,
            terms_of_interest,
            gene2pubmed = FALSE,
+           return_all = FALSE,
            wait_time = 0,
            show_progress = TRUE,
            verbose = FALSE) {
@@ -106,19 +107,24 @@ get_literature_score <-
                    "Topic" = "n",
                    "count" = "n")
       all_counts <- all_counts[-1,]
+      
       message("Querying Pubmed. Might take a while for common terms.")
       
       for (term in terms_of_interest) {
         s <- .query_pubmed(term, ret_max = 999999)
+        
         genes_db <- gene2pubmed_db$GeneID[which(gene2pubmed_db$PubMed_ID %in% s$ids)]
         gene_counts <- as.data.frame(table(genes_db))
-        genes <- c('CD8A', 'CD4')
         genes_entrezgene_id <-
           hgcn_entrez_reference$entrezgene_id[which(hgcn_entrez_reference$hgnc_symbol %in% genes)]
-          hgcn_entrez_reference$hgnc_symbol[hgcn_entrez_reference$entrezgene_id %in% gene_counts$genes_db]
+        
+        # Changing IDs from entrezgene_id to hgnc_symbol
+        gene_counts$hgnc_symbol <- hgcn_entrez_reference$hgnc_symbol[hgcn_entrez_reference$entrezgene_id %in% gene_counts$genes_db]
+        
         
         small_counts <-
           gene_counts[gene_counts$hgnc_symbol %in% genes, ]
+        
         small_counts <- small_counts[, c("hgnc_symbol", "Freq")]
         colnames(small_counts) <- c("Genes", "count")
 
@@ -141,16 +147,10 @@ get_literature_score <-
           gene_counts$Topic <- term
           gene_counts <- gene_counts[, c("Genes", "Topic", "count")]
           all_counts <- rbind(all_counts, gene_counts)
-          return(all_counts)
         }
-        
-        
-      
-   
       }
       
       if (return_all){
-        all_counts <- gene_counts
         return(all_counts)
       }
       return(small_counts_full)
