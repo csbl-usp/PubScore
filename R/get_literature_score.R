@@ -95,8 +95,6 @@ get_literature_score <-
            show_progress = TRUE,
            verbose = FALSE) {
     if (gene2pubmed) {
-      data("gene2pubmed_db")
-      data("hgcn_entrez_reference")
       small_counts_full <-
         data.frame("Genes" = "n",
                    "Topic" = "n",

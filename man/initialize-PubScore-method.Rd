@@ -11,6 +11,9 @@
 \arguments{
 \item{gene2pubmed}{Boolean defining if gene2pubmed db is going to be used.}
 }
+\value{
+A object of the PubScore class
+}
 \description{
 initialize
 }

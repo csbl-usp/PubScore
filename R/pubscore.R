@@ -1,6 +1,8 @@
 #' @import rentrez
 #' @import progress
 #' @import dplyr
+#' @importFrom("methods", "new")
+#' @importFrom("utils", "data")
 
 setOldClass('gg')
 setOldClass('ggplot')
@@ -39,6 +41,7 @@ setClass(
 #'initialize
 #'
 #'@param gene2pubmed Boolean defining if gene2pubmed db is going to be used.
+#'@return A object of the PubScore class
 setMethod('initialize', signature('PubScore'),
           function(.Object, genes, terms_of_interest, gene2pubmed = FALSE) {
             cat("~~~ Initializing PubScore Object ~~~ \n")
@@ -473,4 +476,31 @@ setMethod("test_score", signature("PubScore"),
               pub@p_value <- pvalue
               return(pub)
             }
+          })
+
+
+######### Methods to insert attributes  ######### 
+
+
+#' Set the all_counts attribute
+#' 
+#' @param pub Object of class \code{PubScore}
+#' @return A dataframe containing the counts table for all genes.
+#' @examples
+#' terms_of_interest <- c('Dengue')
+#' pub <- pubscore(terms_of_interest = terms_of_interest, genes = c("CD4", "CD8", "CD14") )
+#' print(getScore(pub))
+#' data("all_counts")
+#' set_all_counts(pub) <- all_counts
+#' @rdname set_all_counts
+#' @export
+setGeneric("set_all_counts<-", function(pub, value) {
+  standardGeneric("set_all_counts<-")
+})
+
+#' @rdname set_all_counts
+setMethod("set_all_counts<-", signature("PubScore"),
+          function(pub, value) {
+            pub@all_counts <- value
+            return(pub)
           })

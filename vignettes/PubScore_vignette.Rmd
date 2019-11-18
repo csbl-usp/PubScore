@@ -209,7 +209,7 @@ It is commented out of the code because of that, but feel free to run it.
 #' all_counts <- AllCounts(pub)
 #' save(all_counts, file= '../data/all_counts.RData')
 data("all_counts")
-pub@all_counts <- all_counts
+set_all_counts(pub) <- all_counts
 ```
 
 
