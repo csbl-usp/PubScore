@@ -1,5 +1,4 @@
 # PubScore
-
 PubScore is an R package for free enrichment analysis. 
 
 
@@ -11,5 +10,5 @@ To use the package:
 
 ```
 install.packages(devtools)
-devtools::install_github("https://github.com/lubianat/PubScore")
+devtools::install_github("lubianat/PubScore")
 ```
