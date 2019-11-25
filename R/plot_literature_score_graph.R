@@ -50,8 +50,6 @@ get_net_ggplot <- function (plotcord, color, name){
     )
   return(pl)
 }
-
-
 get_sum_of_weights <- function(plot_counts){
   sum_of_weights1 <-
     plot_counts %>% group_by(Genes) %>%   summarise(Weight = sum(count))
@@ -110,8 +108,8 @@ plot_literature_graph <-
     
     
     net_obj <- intergraph::asNetwork(igraph_object)
-    m <-
-      network::as.matrix.network.adjacency(net_obj) # get sociomatrix
+    m <-    network::as.matrix.network.adjacency(net_obj) # get sociomatrix
+    
     # get coordinates from Fruchterman and Reingold's force-directed placement algorithm.
     plotcord <-
       data.frame(sna::gplot.layout.fruchtermanreingold(m, NULL))
@@ -155,7 +153,6 @@ plot_literature_graph <-
     plotcord[which(plotcord[, "vertex.names"] %in% not_in), "in_mod"] <-
       FALSE
     
-    color_of_nodes <- 
     pl <- get_net_ggplot(plotcord, color, name)
     return(pl)
   }
