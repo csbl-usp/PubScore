@@ -4,7 +4,8 @@
 \alias{plot_literature_graph}
 \title{#'plot_literature_graph}
 \usage{
-plot_literature_graph(plot_counts, name, color = "#B30000FF", n = 10)
+plot_literature_graph(plot_counts, name, color = "#B30000FF",
+  max_number_of_labels = 10)
 }
 \arguments{
 \item{plot_counts}{The dataframe returned from the get_literature_score function}
@@ -13,7 +14,7 @@ plot_literature_graph(plot_counts, name, color = "#B30000FF", n = 10)
 
 \item{color}{The color of the plot. Defaults to a shade of red ("#B30000FF").}
 
-\item{n}{The max number of gene labels to show.  Defaults to 10.}
+\item{max_number_of_labels}{The max number of gene labels to show.  Defaults to 10.}
 }
 \value{
 A ploty/ggplot2 object is either returned or directly plotted

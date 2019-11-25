@@ -1,4 +1,4 @@
-#' .query_pubmed
+#' #' .query_pubmed
 #'
 #' Auxiliary function for getting the list score
 #' @param search_topic Item to search on PubMed via rentrez

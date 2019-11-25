@@ -6,7 +6,7 @@
 \alias{set_all_counts<-,PubScore-method}
 \title{Set the all_counts attribute}
 \usage{
-set_all_counts(pub, ...) <- value
+set_all_counts(pub) <- value
 
 \S4method{set_all_counts}{PubScore}(pub) <- value
 }

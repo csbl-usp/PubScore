@@ -1,8 +1,8 @@
 #' @import rentrez
 #' @import progress
 #' @import dplyr
-#' @importFrom("methods", "new")
-#' @importFrom("utils", "data")
+#' @importFrom methods new
+#' @importFrom utils data
 
 setOldClass('gg')
 setOldClass('ggplot')

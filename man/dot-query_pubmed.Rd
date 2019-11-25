@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_literature_score.R
 \name{.query_pubmed}
 \alias{.query_pubmed}
-\title{.query_pubmed}
+\title{#' .query_pubmed}
 \usage{
 .query_pubmed(search_topic, wait_time = 0, ret_max = 1)
 }
