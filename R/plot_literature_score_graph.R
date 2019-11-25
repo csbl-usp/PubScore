@@ -61,13 +61,45 @@ get_sum_of_weights <- function(plot_counts){
   }
   
   sum_of_weights <- force_bind(sum_of_weights1, sum_of_weights2)
-  sumwts <- sum_of_weights$Weight
-  names(sumwts) <- sum_of_weights$Genes
-  return(sumwts)
+  WeightedDegree <- sum_of_weights$Weight
+  names(WeightedDegree) <- sum_of_weights$Genes
+  return(WeightedDegree)
 }
-
-
-
+get_fruchterman_reingold_coordinates <- function(network_object_adjacency_matrix){
+  return(data.frame(sna::gplot.layout.fruchtermanreingold(network_object_adjacency_matrix, NULL)))
+}
+get_edges_from_network_edgelist <- function(network_object_edgelist){
+  data.frame(plotcord[network_object_edgelist[, 1], ], plotcord[network_object_edgelist[, 2], ])
+}
+extract_attribute_to_coordinates <- function(plotcord, network_object, attribute){
+  plotcord[attribute] <-
+    as.factor(network::get.vertex.attribute(network_object, attribute))
+  return(plotcord)
+}
+set_coordinate_types <- function(plot_counts, plotcord){
+  plotcord[, "Type"] <- ""
+  plotcord[which(plotcord$vertex.names %in% plot_counts$Genes), "Type"] <-
+    "Gene"
+  plotcord[which(plotcord$vertex.names %in% plot_counts$Topic), "Type"] <-
+    "Topic"
+  
+  return(plotcord)
+}
+set_genes_to_label <- function(plotcord, max_n){
+  plotcord[, "shouldLabel"] <- FALSE
+  int_hubs <- names(sort(WeightedDegree, decreasing = TRUE))[seq_len(max_n)]
+  int_bool <- plotcord[, "vertex.names"] %in% int_hubs
+  
+  mod_genes <- names(WeightedDegree[names(WeightedDegree) %in% plot_counts$Genes])
+  sel_genes <-
+    names(sort(WeightedDegree[names(WeightedDegree) %in% plot_counts$Genes], decreasing = TRUE))[seq_len(max_n)]
+  sel_vertex <-
+    c(sel_genes, names(WeightedDegree[names(WeightedDegree) %in% plot_counts$Topic]))
+  plotcord[which(plotcord[, "vertex.names"] %in% sel_vertex), "shouldLabel"] <-
+    TRUE
+  
+  return(plotcord)
+}
 
 #' #'plot_literature_graph
 #'
@@ -97,62 +129,52 @@ plot_literature_graph <-
            name,
            color = "#B30000FF",
            max_number_of_labels = 10) {
+    
+    
     plot_counts <- plot_counts[plot_counts$count > 0,]
     
-    sumwts <- get_sum_of_weights(plot_counts)
+    WeightedDegree <- get_sum_of_weights(plot_counts)
+    max_n <- min(max_number_of_labels, sum(names(WeightedDegree) %in% plot_counts$Genes))
+    
     
     degrees <- igraph::degree(igraph_object, normalized = FALSE)
+    
     igraph_object <- igraph::graph.data.frame(plot_counts)
     igraph_object <-
-      igraph::set_vertex_attr(igraph_object, "sumwts", value = sumwts)
+    igraph::set_vertex_attr(igraph_object, "WeightedDegree", value = WeightedDegree)
     
     
-    net_obj <- intergraph::asNetwork(igraph_object)
-    m <-    network::as.matrix.network.adjacency(net_obj) # get sociomatrix
+    network_object <- intergraph::asNetwork(igraph_object)
+    network_object_adjacency_matrix <-  network::as.matrix.network.adjacency(network_object) 
+    network_object_edgelist <- network::as.matrix.network.edgelist(network_object)
     
-    # get coordinates from Fruchterman and Reingold's force-directed placement algorithm.
-    plotcord <-
-      data.frame(sna::gplot.layout.fruchtermanreingold(m, NULL))
-    # or get it them from Kamada-Kawai's algorithm:
-    # plotcord <- data.frame(sna::gplot.layout.kamadakawai(m, NULL))
+    plotcord <- get_fruchterman_reingold_coordinates(network_object_adjacency_matrix)
+      
     colnames(plotcord) <- c("X1", "X2")
-    edglist <- network::as.matrix.network.edgelist(net_obj)
-    edges <-
-      data.frame(plotcord[edglist[, 1], ], plotcord[edglist[, 2], ])
-    plotcord$vertex.names <-
-      as.factor(network::get.vertex.attribute(net_obj, "vertex.names"))
-    plotcord$WeightedDegree <-
-      network::get.vertex.attribute(net_obj, "sumwts")
-    plotcord[, "shouldLabel"] <- FALSE
-    plotcord[, "Type"] <- ""
+
+    edges <- get_edges_from_network_edgelist(network_object_edgelist)
     
-    max_n <- min(max_number_of_labels, sum(names(sumwts) %in% plot_counts$Genes))
-    int_hubs <- names(sort(sumwts, decreasing = TRUE))[seq_len(max_n)]
-    int_bool <- plotcord[, "vertex.names"] %in% int_hubs
-    plotcord[which(plotcord$vertex.names %in% plot_counts$Genes), "Type"] <-
-      "Gene"
-    plotcord[which(plotcord$vertex.names %in% plot_counts$Topic), "Type"] <-
-      "Topic"
-    mod_genes <- names(sumwts[names(sumwts) %in% plot_counts$Genes])
-    sel_genes <-
-      names(sort(sumwts[names(sumwts) %in% plot_counts$Genes], decreasing = TRUE))[seq_len(max_n)]
-    sel_vertex <-
-      c(sel_genes, names(sumwts[names(sumwts) %in% plot_counts$Topic]))
-    colnames(edges) <-  c("X1", "Y1", "X2", "Y2")
-    #edges$midX  <- (edges$X1 + edges$X2) / 2
-    #edges$midY  <- (edges$Y1 + edges$Y2) / 2
-    plotcord[which(plotcord[, "vertex.names"] %in% sel_vertex), "shouldLabel"] <-
-      TRUE
+    plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "vertex.names")
+    
+    plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "WeightedDegree")
+    
+    plotcord$WeightedDegree <- as.numeric(plotcord$WeightedDegree)
+    
+    
+    plotcord <- set_coordinate_types(plot_counts, plotcord)
+    plotcord <- set_genes_to_label(plotcord, max_n)
+    
     plotcord$Degree_cut <-
       cut(plotcord$WeightedDegree,
           breaks = 3,
           labels = FALSE)
+    colnames(edges) <-  c("X1", "Y1", "X2", "Y2")
     plotcord$in_mod <- TRUE
-    #mod_genes <- cem@module[cem@module$modules==name,]$genes
     not_in <- setdiff(plotcord[, "vertex.names"], mod_genes)
     plotcord[which(plotcord[, "vertex.names"] %in% not_in), "in_mod"] <-
       FALSE
     
     pl <- get_net_ggplot(plotcord, color, name)
+    pl
     return(pl)
   }
