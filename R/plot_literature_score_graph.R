@@ -68,7 +68,7 @@ get_sum_of_weights <- function(plot_counts){
 get_fruchterman_reingold_coordinates <- function(network_object_adjacency_matrix){
   return(data.frame(sna::gplot.layout.fruchtermanreingold(network_object_adjacency_matrix, NULL)))
 }
-get_edges_from_network_edgelist <- function(network_object_edgelist){
+get_edges_from_network_edgelist <- function(network_object_edgelist,plotcord){
   data.frame(plotcord[network_object_edgelist[, 1], ], plotcord[network_object_edgelist[, 2], ])
 }
 extract_attribute_to_coordinates <- function(plotcord, network_object, attribute){
@@ -136,11 +136,10 @@ plot_literature_graph <-
     WeightedDegree <- get_sum_of_weights(plot_counts)
     max_n <- min(max_number_of_labels, sum(names(WeightedDegree) %in% plot_counts$Genes))
     
-    degrees <- igraph::degree(igraph_object, normalized = FALSE)
-    
     igraph_object <- igraph::graph.data.frame(plot_counts)
     igraph_object <-
     igraph::set_vertex_attr(igraph_object, "WeightedDegree", value = WeightedDegree)
+    degrees <- igraph::degree(igraph_object, normalized = FALSE)
     
     network_object <- intergraph::asNetwork(igraph_object)
     network_object_adjacency_matrix <-  network::as.matrix.network.adjacency(network_object) 
@@ -150,7 +149,7 @@ plot_literature_graph <-
       
     colnames(plotcord) <- c("X1", "X2")
 
-    edges <- get_edges_from_network_edgelist(network_object_edgelist)
+    
     
     plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "vertex.names")
     plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "WeightedDegree")
@@ -162,6 +161,7 @@ plot_literature_graph <-
       cut(plotcord$WeightedDegree,
           breaks = 3,
           labels = FALSE)
+    edges <- get_edges_from_network_edgelist(network_object_edgelist,pĺotcord)
     colnames(edges) <-  c("X1", "Y1", "X2", "Y2")
     plotcord$in_mod <- TRUE
     not_in <- setdiff(plotcord[, "vertex.names"], mod_genes)
