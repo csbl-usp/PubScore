@@ -23,10 +23,9 @@ A ploty/ggplot2 object is either returned or directly plotted
 Plot a graph inspired in CEMiTool's graphs
 }
 \examples{
-  gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
-  terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-                            "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-  literature_counts <- get_literature_score(gene, terms_of_interest)
+ gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
+ terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte")
+ literature_counts <- get_literature_score(gene, terms_of_interest)
   pl <- plot_literature_graph(literature_counts, name = 'test')
   pl
 }
