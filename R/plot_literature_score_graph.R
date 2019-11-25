@@ -1,3 +1,76 @@
+
+
+
+get_net_ggplot <- function (plotcord, color, name){
+  pl <- ggplot(plotcord)  +
+    geom_segment(
+      data = edges,
+      aes_(
+        x =  ~ X1,
+        y =  ~ Y1,
+        xend =  ~ X2,
+        yend =  ~ Y2
+      ),
+      size = 0.5,
+      alpha = 0.9,
+      colour = "gray25"
+    ) +
+    geom_point(aes_(
+      x =  ~ X1,
+      y =  ~ X2,
+      size =  ~ WeightedDegree,
+      alpha =  ~ WeightedDegree
+    ),
+    color = color) +
+    geom_label_repel(
+      aes_(
+        x =  ~ X1,
+        y =  ~ X2,
+        label =  ~ vertex.names,
+        color =  ~ Type
+      ),
+      box.padding = unit(1, "lines"),
+      data = function(x) {
+        x[x$shouldLabel,]
+      }
+    ) +
+    scale_colour_manual(values = c("Gene" = "#005E87",
+                                   "Topic" = "#540814")) +
+    labs(title = name) +
+    ggplot2::theme_bw(base_size = 12, base_family = "") +
+    ggplot2::theme(
+      axis.text = ggplot2::element_blank(),
+      axis.ticks = ggplot2::element_blank(),
+      axis.title = ggplot2::element_blank(),
+      legend.key = ggplot2::element_blank(),
+      panel.background = ggplot2::element_rect(fill = "white",
+                                               colour = NA),
+      panel.border = ggplot2::element_blank(),
+      panel.grid = ggplot2::element_blank()
+    )
+  return(pl)
+}
+
+
+get_sum_of_weights <- function(plot_counts){
+  sum_of_weights1 <-
+    plot_counts %>% group_by(Genes) %>%   summarise(Weight = sum(count))
+  sum_of_weights2 <-
+    plot_counts %>% group_by(Topic) %>%   summarise(Weight = sum(count))
+  force_bind = function(df1, df2) {
+    colnames(df2) = colnames(df1)
+    rbind(df1, df2)
+  }
+  
+  sum_of_weights <- force_bind(sum_of_weights1, sum_of_weights2)
+  sumwts <- sum_of_weights$Weight
+  names(sumwts) <- sum_of_weights$Genes
+  return(sumwts)
+}
+
+
+
+
 #' #'plot_literature_graph
 #'
 #'Plot a graph inspired in CEMiTool's graphs
@@ -6,7 +79,7 @@
 #' @param plot_counts The dataframe returned from the get_literature_score function
 #' @param name The name of the plot.
 #' @param color The color of the plot. Defaults to a shade of red ("#B30000FF").
-#' @param n The max number of gene labels to show.  Defaults to 10.
+#' @param max_number_of_labels The max number of gene labels to show.  Defaults to 10.
 #' @import igraph
 #' @import ggrepel
 #' @import ggplot2
@@ -25,42 +98,18 @@ plot_literature_graph <-
   function(plot_counts,
            name,
            color = "#B30000FF",
-           n = 10) {
+           max_number_of_labels = 10) {
     plot_counts <- plot_counts[plot_counts$count > 0,]
-    ig_obj <- igraph::graph.data.frame(plot_counts)
-    sum_of_weights1 <-
-      plot_counts %>% group_by(Genes) %>%   summarise(Weight = sum(count))
-    sum_of_weights2 <-
-      plot_counts %>% group_by(Topic) %>%   summarise(Weight = sum(count))
+    
+    sumwts <- get_sum_of_weights(plot_counts)
+    
+    degrees <- igraph::degree(igraph_object, normalized = FALSE)
+    igraph_object <- igraph::graph.data.frame(plot_counts)
+    igraph_object <-
+      igraph::set_vertex_attr(igraph_object, "sumwts", value = sumwts)
     
     
-    force_bind = function(df1, df2) {
-      colnames(df2) = colnames(df1)
-      rbind(df1, df2)
-    }
-    
-    sum_of_weights <- force_bind(sum_of_weights1, sum_of_weights2)
-    
-    force_bind = function(df1, df2) {
-      colnames(df2) = colnames(df1)
-      rbind(df1, df2)
-    }
-    
-    sum_of_weights <- force_bind(sum_of_weights1, sum_of_weights2)
-    
-    
-    
-    
-    
-    
-    
-    
-    degrees <- igraph::degree(ig_obj, normalized = FALSE)
-    sumwts <- sum_of_weights$Weight
-    names(sumwts) <- sum_of_weights$Genes
-    ig_obj <-
-      igraph::set_vertex_attr(ig_obj, "sumwts", value = sumwts)
-    net_obj <- intergraph::asNetwork(ig_obj)
+    net_obj <- intergraph::asNetwork(igraph_object)
     m <-
       network::as.matrix.network.adjacency(net_obj) # get sociomatrix
     # get coordinates from Fruchterman and Reingold's force-directed placement algorithm.
@@ -79,7 +128,7 @@ plot_literature_graph <-
     plotcord[, "shouldLabel"] <- FALSE
     plotcord[, "Type"] <- ""
     
-    max_n <- min(n, sum(names(sumwts) %in% plot_counts$Genes))
+    max_n <- min(max_number_of_labels, sum(names(sumwts) %in% plot_counts$Genes))
     int_hubs <- names(sort(sumwts, decreasing = TRUE))[seq_len(max_n)]
     int_bool <- plotcord[, "vertex.names"] %in% int_hubs
     plotcord[which(plotcord$vertex.names %in% plot_counts$Genes), "Type"] <-
@@ -106,52 +155,7 @@ plot_literature_graph <-
     plotcord[which(plotcord[, "vertex.names"] %in% not_in), "in_mod"] <-
       FALSE
     
-    pl <- ggplot(plotcord)  +
-      geom_segment(
-        data = edges,
-        aes_(
-          x =  ~ X1,
-          y =  ~ Y1,
-          xend =  ~ X2,
-          yend =  ~ Y2
-        ),
-        size = 0.5,
-        alpha = 0.9,
-        colour = "gray25"
-      ) +
-      geom_point(aes_(
-        x =  ~ X1,
-        y =  ~ X2,
-        size =  ~ WeightedDegree,
-        alpha =  ~ WeightedDegree
-      ),
-      color = color) +
-      geom_label_repel(
-        aes_(
-          x =  ~ X1,
-          y =  ~ X2,
-          label =  ~ vertex.names,
-          color =  ~ Type
-        ),
-        box.padding = unit(1, "lines"),
-        data = function(x) {
-          x[x$shouldLabel,]
-        }
-      ) +
-      scale_colour_manual(values = c("Gene" = "#005E87",
-                                     "Topic" = "#540814")) +
-      labs(title = name) +
-      ggplot2::theme_bw(base_size = 12, base_family = "") +
-      ggplot2::theme(
-        axis.text = ggplot2::element_blank(),
-        axis.ticks = ggplot2::element_blank(),
-        axis.title = ggplot2::element_blank(),
-        legend.key = ggplot2::element_blank(),
-        panel.background = ggplot2::element_rect(fill = "white",
-                                                 colour = NA),
-        panel.border = ggplot2::element_blank(),
-        panel.grid = ggplot2::element_blank()
-      )
-    
+    color_of_nodes <- 
+    pl <- get_net_ggplot(plotcord, color, name)
     return(pl)
   }
