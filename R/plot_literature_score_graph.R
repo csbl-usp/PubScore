@@ -136,13 +136,11 @@ plot_literature_graph <-
     WeightedDegree <- get_sum_of_weights(plot_counts)
     max_n <- min(max_number_of_labels, sum(names(WeightedDegree) %in% plot_counts$Genes))
     
-    
     degrees <- igraph::degree(igraph_object, normalized = FALSE)
     
     igraph_object <- igraph::graph.data.frame(plot_counts)
     igraph_object <-
     igraph::set_vertex_attr(igraph_object, "WeightedDegree", value = WeightedDegree)
-    
     
     network_object <- intergraph::asNetwork(igraph_object)
     network_object_adjacency_matrix <-  network::as.matrix.network.adjacency(network_object) 
@@ -155,9 +153,7 @@ plot_literature_graph <-
     edges <- get_edges_from_network_edgelist(network_object_edgelist)
     
     plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "vertex.names")
-    
     plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "WeightedDegree")
-    
     plotcord$WeightedDegree <- as.numeric(plotcord$WeightedDegree)
     
     
