@@ -155,8 +155,6 @@ plot_literature_graph <-
     plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "vertex.names")
     plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "WeightedDegree")
     plotcord$WeightedDegree <- as.numeric(plotcord$WeightedDegree)
-    
-    
     plotcord <- set_coordinate_types(plot_counts, plotcord)
     plotcord <- set_genes_to_label(plotcord, max_n)
     
@@ -171,6 +169,5 @@ plot_literature_graph <-
       FALSE
     
     pl <- get_net_ggplot(plotcord, color, name)
-    pl
     return(pl)
   }
