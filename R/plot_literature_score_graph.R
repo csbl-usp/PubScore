@@ -69,7 +69,8 @@ get_fruchterman_reingold_coordinates <- function(network_object_adjacency_matrix
   return(data.frame(sna::gplot.layout.fruchtermanreingold(network_object_adjacency_matrix, NULL)))
 }
 get_edges_from_network_edgelist <- function(network_object_edgelist,plotcord){
-  data.frame(plotcord[network_object_edgelist[, 1], ], plotcord[network_object_edgelist[, 2], ])
+  edges <-  data.frame(plotcord$vertex.names[network_object_edgelist[, 1]], plotcord$vertex.names[network_object_edgelist[, 2]])
+  return(edges)
 }
 extract_attribute_to_coordinates <- function(plotcord, network_object, attribute){
   plotcord[attribute] <-
@@ -85,7 +86,7 @@ set_coordinate_types <- function(plot_counts, plotcord){
   
   return(plotcord)
 }
-set_genes_to_label <- function(plotcord, max_n){
+set_genes_to_label <- function(plotcord, max_n, WeightedDegree, plot_counts){
   plotcord[, "shouldLabel"] <- FALSE
   int_hubs <- names(sort(WeightedDegree, decreasing = TRUE))[seq_len(max_n)]
   int_bool <- plotcord[, "vertex.names"] %in% int_hubs
@@ -116,10 +117,9 @@ set_genes_to_label <- function(plotcord, max_n){
 #' @return A ploty/ggplot2 object is either returned or directly plotted
 #' @export
 #' @examples
-#'   gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
-#'   terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", "CD8 T cell",
-#'                             "FCGR3A+ Monocyte", "NK cell", "Dendritic cell", "Megakaryocyte", 'immunity')
-#'   literature_counts <- get_literature_score(gene, terms_of_interest)
+   gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
+   terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte")
+   literature_counts <- get_literature_score(gene, terms_of_interest)
 #'   pl <- plot_literature_graph(literature_counts, name = 'test')
 #'   pl
  
@@ -149,22 +149,23 @@ plot_literature_graph <-
       
     colnames(plotcord) <- c("X1", "X2")
 
-    
-    
     plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "vertex.names")
     plotcord <- extract_attribute_to_coordinates(plotcord, network_object, attribute = "WeightedDegree")
     plotcord$WeightedDegree <- as.numeric(plotcord$WeightedDegree)
     plotcord <- set_coordinate_types(plot_counts, plotcord)
-    plotcord <- set_genes_to_label(plotcord, max_n)
+    plotcord <- set_genes_to_label(plotcord, max_n, WeightedDegree, plot_counts)
     
     plotcord$Degree_cut <-
       cut(plotcord$WeightedDegree,
           breaks = 3,
           labels = FALSE)
-    edges <- get_edges_from_network_edgelist(network_object_edgelist,pĺotcord)
+    
+    edges <- get_edges_from_network_edgelist(network_object_edgelist, plotcord = plotcord) 
     colnames(edges) <-  c("X1", "Y1", "X2", "Y2")
+    
+    all_genes <- plot_counts$Genes
     plotcord$in_mod <- TRUE
-    not_in <- setdiff(plotcord[, "vertex.names"], mod_genes)
+    not_in <- setdiff(plotcord[, "vertex.names"], all_genes)
     plotcord[which(plotcord[, "vertex.names"] %in% not_in), "in_mod"] <-
       FALSE
     
