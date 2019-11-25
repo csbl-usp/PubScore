@@ -67,7 +67,7 @@ setMethod('initialize', signature('PubScore'),
             .Object@network <- plot_literature_graph(cts,
                                                      name = 'PubScore Network',
                                                      color = "#B30000FF",
-                                                     n = 10)
+                                                     max_number_of_labels = 10)
             .Object@literature_score <-
               sum(cts$count) / (length(genes) * length(terms_of_interest))
             .Object@total_genes <- 'empty'
