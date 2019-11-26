@@ -26,12 +26,11 @@
 
 
 
-
-
-#' literature_object after pvalue testing
-#' Result of the test_score method of the pubscore class
+#' all_counts
+#' 
+#' A dataframe with all counts for total genes in the Dengue dataset
+#' and the term Dengue. Outcome of the test_score method of the pubscore class
 #'
-
 #' @name all_counts
 #' @docType data
 #' @usage data(all_counts)

@@ -206,7 +206,7 @@ It is commented out of the code because of that, but feel free to run it.
 ```{r} 
 
 #' pub <- test_score(pub, total_genes = total_genes)
-#' all_counts <- AllCounts(pub)
+#' all_counts <- get_all_counts(pub)
 #' save(all_counts, file= '../data/all_counts.RData')
 data("all_counts")
 set_all_counts(pub) <- all_counts
@@ -217,7 +217,7 @@ We will re-do the p-value estimation just to be really clear about how it is don
 ```{r}
 
 # A table with all possible combinations is generated
-simulation_of_literature_null <- AllCounts(pub)
+simulation_of_literature_null <- get_all_counts(pub)
 
 # Then, a number of genes equal to your original list is picked
 # and, from this list, we get a score.
@@ -264,7 +264,7 @@ Let's look at the top genes associated with Dengue in the literature, in the lit
 
 
 ```{r}
-all_counts <- AllCounts(pub)
+all_counts <- get_all_counts(pub)
 head(all_counts$Genes[order(all_counts$count, decreasing = TRUE)], 10)
 ```
 

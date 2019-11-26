@@ -3,15 +3,14 @@
 \docType{data}
 \name{all_counts}
 \alias{all_counts}
-\title{literature_object after pvalue testing
-Result of the test_score method of the pubscore class}
+\title{all_counts}
 \format{A list}
 \usage{
 data(all_counts)
 }
 \description{
-literature_object after pvalue testing
-Result of the test_score method of the pubscore class
+A dataframe with all counts for total genes in the Dengue dataset
+and the term Dengue. Outcome of the test_score method of the pubscore class
 }
 \keyword{datasets,}
 \keyword{literature}

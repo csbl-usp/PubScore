@@ -43,14 +43,22 @@ setClass(
 #'@param gene2pubmed Boolean defining if gene2pubmed db is going to be used.
 #'@return A object of the PubScore class
 setMethod('initialize', signature('PubScore'),
-          function(.Object, genes, terms_of_interest, gene2pubmed = FALSE) {
+          function(.Object,
+                   genes,
+                   terms_of_interest,
+                   gene2pubmed = FALSE) {
             cat("~~~ Initializing PubScore Object ~~~ \n")
             .Object@genes <- genes
             .Object@terms_of_interest <- terms_of_interest
             
-            if (gene2pubmed){
-              cts <- get_literature_score(genes, terms_of_interest, gene2pubmed = gene2pubmed)
-              all_counts <- get_literature_score(genes, terms_of_interest, gene2pubmed = gene2pubmed, return_all = TRUE)
+            if (gene2pubmed) {
+              cts <-
+                get_literature_score(genes, terms_of_interest, gene2pubmed = gene2pubmed)
+              all_counts <-
+                get_literature_score(genes,
+                                     terms_of_interest,
+                                     gene2pubmed = gene2pubmed,
+                                     return_all = TRUE)
               
               .Object@all_counts <- all_counts
               
@@ -59,15 +67,17 @@ setMethod('initialize', signature('PubScore'),
               .Object@counts <- cts
               .Object@all_counts <- data.frame()
             }
-
+            
             .Object@date <- Sys.Date()
             .Object@heatmap <- plot_literature_score(cts,
                                                      return_ggplot = TRUE,
                                                      is_plotly = FALSE)
-            .Object@network <- plot_literature_graph(cts,
-                                                     name = 'PubScore Network',
-                                                     color = "#B30000FF",
-                                                     max_number_of_labels = 10)
+            .Object@network <- plot_literature_graph(
+              cts,
+              name = 'PubScore Network',
+              color = "#B30000FF",
+              max_number_of_labels = 10
+            )
             .Object@literature_score <-
               sum(cts$count) / (length(genes) * length(terms_of_interest))
             .Object@total_genes <- 'empty'
@@ -130,17 +140,19 @@ setMethod(
 #' @return Object of class \code{PubScore}
 #' @export
 
-pubscore <- function(terms_of_interest, genes, gene2pubmed = FALSE) {
-  results <- new(Class = "PubScore", genes, terms_of_interest, gene2pubmed)
-  return(results)
-}
+pubscore <-
+  function(terms_of_interest, genes, gene2pubmed = FALSE) {
+    results <-
+      new(Class = "PubScore", genes, terms_of_interest, gene2pubmed)
+    return(results)
+  }
 
 
 ####### SECTION 2 - METHODS TO RETRIEVE ATTRIBUTES  #######
 
 
 #' Retrieve the heatmap attribute
-#' 
+#'
 #' @param pub Object of class \code{PubScore}
 #' @return A "gg" object, from ggplot2, containing a heatmap from the counts table.
 #' @examples
@@ -149,7 +161,7 @@ pubscore <- function(terms_of_interest, genes, gene2pubmed = FALSE) {
 #' plot(heatmapViz(pub))
 #' @rdname heatmapViz
 #' @export
-#' 
+#'
 setGeneric("heatmapViz", function(pub) {
   standardGeneric("heatmapViz")
 })
@@ -162,7 +174,7 @@ setMethod("heatmapViz", signature("PubScore"),
 
 
 #' Retrieve the network attribute
-#' 
+#'
 #' @param pub Object of class \code{PubScore}
 #' @return A "gg" object, from ggplot2, containing a network from the counts table.
 #' @examples
@@ -171,7 +183,7 @@ setMethod("heatmapViz", signature("PubScore"),
 #' plot(networkViz(pub))
 #' @rdname networkViz
 #' @export
-#' 
+#'
 setGeneric("networkViz", function(pub) {
   standardGeneric("networkViz")
 })
@@ -183,7 +195,7 @@ setMethod("networkViz", signature("PubScore"),
 
 
 #' Retrieve the literature_score attribute
-#' 
+#'
 #' @param pub Object of class \code{PubScore}
 #' @return A "numeric" with the literature score for this gene x term combination
 #' @examples
@@ -203,21 +215,21 @@ setMethod("getScore", signature("PubScore"),
           })
 
 #' Retrieve the all_counts attribute
-#' 
+#'
 #' @param pub Object of class \code{PubScore}
 #' @return A dataframe containing the counts table for all genes.
 #' @examples
 #' # Create a new pubscore object
 #' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
 #' plot(networkViz(pub))
-#' @rdname AllCounts
+#' @rdname get_all_counts
 #' @export
-setGeneric("AllCounts", function(pub, ...) {
-  standardGeneric("AllCounts")
+setGeneric("get_all_counts", function(pub, ...) {
+  standardGeneric("get_all_counts")
 })
 
-#' @rdname AllCounts
-setMethod("AllCounts", signature("PubScore"),
+#' @rdname get_all_counts
+setMethod("get_all_counts", signature("PubScore"),
           function(pub) {
             return(pub@all_counts)
           })
@@ -230,7 +242,7 @@ setMethod("AllCounts", signature("PubScore"),
 .getSimulation_test <-
   function(pub, ambiguous = c(), n_simulations) {
     simulation_of_literature_null <-
-      pub@all_counts[!pub@all_counts$Genes %in% ambiguous,]
+      pub@all_counts[!pub@all_counts$Genes %in% ambiguous, ]
     
     n_genes <- length(pub@genes[!pub@genes %in% ambiguous])
     total_genes <-
@@ -241,10 +253,11 @@ setMethod("AllCounts", signature("PubScore"),
     for (i in seq_len(n_simulations)) {
       genes_to_sample_now <- sample(total_genes, n_genes)
       simu_now <-
-        simulation_of_literature_null[simulation_of_literature_null$Genes %in% genes_to_sample_now,]$count
+        simulation_of_literature_null[simulation_of_literature_null$Genes %in% genes_to_sample_now, ]$count
       list_score <-
         sum(simu_now) / (length(pub@genes) * length(pub@terms_of_interest))
-      distribution_of_scores <- c(distribution_of_scores, list_score)
+      distribution_of_scores <-
+        c(distribution_of_scores, list_score)
       
     }
     
@@ -253,10 +266,10 @@ setMethod("AllCounts", signature("PubScore"),
     
   }
 
-#######  SECTION 3 - ADDITIONAL METHODS ####### 
+#######  SECTION 3 - ADDITIONAL METHODS #######
 
 #' Test the literature enrichment score
-#' 
+#'
 #' @param pub Object of class \code{PubScore}
 #' @param total_genes A list of all the possible genes in your study.
 #' Usually all the names in the rows of an "exprs" object.
@@ -264,13 +277,16 @@ setMethod("AllCounts", signature("PubScore"),
 #' @param verbose If TRUE, will display the index of the search occuring. Defaults to false.
 #' @param remove_ambiguous If TRUE, ambiguously named genes (such as "MARCH") will be removed. Defaults to TRUE.
 #' @param nsim The number of simulations to run. Defaults to 100000.
-#' @param ambiguous_terms A character vector of the ambiguous terms to use instead of the default. 
+#' @param ambiguous_terms A character vector of the ambiguous terms to use instead of the default.
 #' The default includes 60 genes pre-selected as ambiguous (as IMPACT, MARCH and ACHE).
 #' @return A "gg" object, from ggplot2, containing a network from the counts table.
 #' @examples
 #' # Create a new pubscore object
-#' pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
-#' pub <- test_score(pub, total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),remove_ambiguous = TRUE)
+#' pub <- pubscore(genes = c('cd4','cd8'),
+#' terms_of_interest = c('blabla','immunity'))
+#' pub <- test_score(pub, 
+#' total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),
+#' remove_ambiguous = TRUE)
 #' @rdname test_score
 #' @export
 setGeneric("test_score", function(pub,
@@ -416,14 +432,14 @@ setMethod("test_score", signature("PubScore"),
                      "COIL",
                      "CAST "
                    )) {
-            if (pub@gene2pubmed){
+            if (pub@gene2pubmed) {
               stop("Test score not available when gene2pubmed is used... yet!")
             }
             terms_of_interest <- pub@terms_of_interest
             genes_to_sample <- pub@genes
             simulation_of_literature_null <- data.frame(2, 2, 2)
             simulation_of_literature_null <-
-              simulation_of_literature_null[-1, ]
+              simulation_of_literature_null[-1,]
             
             
             if (length(pub@all_counts) == 0) {
@@ -447,8 +463,8 @@ setMethod("test_score", signature("PubScore"),
                 })
               }
               simulation_of_literature_null <-
-                simulation_of_literature_null[simulation_of_literature_null$i != "", ]
-              pub@all_counts <- simulation_of_literature_null[, -1]
+                simulation_of_literature_null[simulation_of_literature_null$i != "",]
+              pub@all_counts <- simulation_of_literature_null[,-1]
             }
             if (remove_ambiguous == FALSE) {
               distribution_of_scores <-
@@ -479,11 +495,11 @@ setMethod("test_score", signature("PubScore"),
           })
 
 
-######### Methods to insert attributes  ######### 
+######### Methods to insert attributes  #########
 
 
 #' Set the all_counts attribute
-#' 
+#'
 #' @param pub Object of class \code{PubScore}
 #' @return A dataframe containing the counts table for all genes.
 #' @examples

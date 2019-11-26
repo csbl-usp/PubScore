@@ -40,7 +40,7 @@ Usually all the names in the rows of an "exprs" object.}
 
 \item{nsim}{The number of simulations to run. Defaults to 100000.}
 
-\item{ambiguous_terms}{A character vector of the ambiguous terms to use instead of the default. 
+\item{ambiguous_terms}{A character vector of the ambiguous terms to use instead of the default.
 The default includes 60 genes pre-selected as ambiguous (as IMPACT, MARCH and ACHE).}
 }
 \value{
@@ -51,6 +51,9 @@ Test the literature enrichment score
 }
 \examples{
 # Create a new pubscore object
-pub <- pubscore(genes = c('cd4','cd8'),terms_of_interest = c('blabla','immunity'))
-pub <- test_score(pub, total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),remove_ambiguous = TRUE)
+pub <- pubscore(genes = c('cd4','cd8'),
+terms_of_interest = c('blabla','immunity'))
+pub <- test_score(pub, 
+total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),
+remove_ambiguous = TRUE)
 }
