@@ -73,7 +73,6 @@ get_edges_from_network_edgelist <- function(network_object_edgelist,plotcord){
   edges <- data.frame(coordinates[network_object_edgelist[,1],], coordinates[network_object_edgelist[,2],])
   colnames(edges) <-  c("X1", "Y1", "X2", "Y2")
 return(edges)
-
 }
 extract_attribute_to_coordinates <- function(plotcord, network_object, attribute){
   plotcord[attribute] <-
@@ -164,7 +163,6 @@ plot_literature_graph <-
           labels = FALSE)
     
     edges <- get_edges_from_network_edgelist(network_object_edgelist, plotcord = plotcord) 
-    
     all_genes <- plot_counts$Genes
     plotcord$in_mod <- TRUE
     not_in <- setdiff(plotcord[, "vertex.names"], all_genes)
