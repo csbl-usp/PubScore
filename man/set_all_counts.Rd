@@ -12,6 +12,8 @@ set_all_counts(pub) <- value
 }
 \arguments{
 \item{pub}{Object of class \code{PubScore}}
+
+\item{value}{The table with all gene x term article counts from the "test_score" method.}
 }
 \value{
 A dataframe containing the counts table for all genes.

@@ -39,8 +39,10 @@ setClass(
 )
 
 #'initialize
-#'
-#'@param gene2pubmed Boolean defining if gene2pubmed db is going to be used.
+#' @param .Object The object of signature PubScore that is foinf to be created
+#' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance.
+#' @param genes The genes to which you want to calculate and visualize the literature score.
+#' @param gene2pubmed Boolean defining if gene2pubmed db is going to be used.
 #'@return A object of the PubScore class
 setMethod('initialize', signature('PubScore'),
           function(.Object,
@@ -224,7 +226,7 @@ setMethod("getScore", signature("PubScore"),
 #' plot(networkViz(pub))
 #' @rdname get_all_counts
 #' @export
-setGeneric("get_all_counts", function(pub, ...) {
+setGeneric("get_all_counts", function(pub) {
   standardGeneric("get_all_counts")
 })
 
@@ -501,6 +503,7 @@ setMethod("test_score", signature("PubScore"),
 #' Set the all_counts attribute
 #'
 #' @param pub Object of class \code{PubScore}
+#' @param value The table with all gene x term article counts from the "test_score" method.
 #' @return A dataframe containing the counts table for all genes.
 #' @examples
 #' terms_of_interest <- c('Dengue')

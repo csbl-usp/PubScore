@@ -6,7 +6,7 @@
 \alias{get_all_counts,PubScore-method}
 \title{Retrieve the all_counts attribute}
 \usage{
-get_all_counts(pub, ...)
+get_all_counts(pub)
 
 \S4method{get_all_counts}{PubScore}(pub)
 }

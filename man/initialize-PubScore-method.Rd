@@ -9,6 +9,12 @@
   gene2pubmed = FALSE)
 }
 \arguments{
+\item{.Object}{The object of signature PubScore that is foinf to be created}
+
+\item{genes}{The genes to which you want to calculate and visualize the literature score.}
+
+\item{terms_of_interest}{A list of terms of interest related to the topic you want to find the relevance.}
+
 \item{gene2pubmed}{Boolean defining if gene2pubmed db is going to be used.}
 }
 \value{
