@@ -284,7 +284,7 @@ setMethod("get_all_counts", signature("PubScore"),
 #' # Create a new pubscore object
 #' pub <- pubscore(genes = c('cd4','cd8'),
 #' terms_of_interest = c('blabla','immunity'))
-#' pub <- test_score(pub, 
+#' pub <- test_score(pub,
 #' total_genes = c('notagene1', 'notagene2', 'cd4', 'cd8'),
 #' remove_ambiguous = TRUE)
 #' @rdname test_score

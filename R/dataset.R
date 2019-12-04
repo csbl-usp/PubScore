@@ -1,4 +1,5 @@
 
+
 #' hgcn_entrez_reference
 #' biomaRt results (october 2019) for entrezids and gene symbols.
 #' processed.
@@ -27,7 +28,7 @@
 
 
 #' all_counts
-#' 
+#'
 #' A dataframe with all counts for total genes in the Dengue dataset
 #' and the term Dengue. Outcome of the test_score method of the pubscore class
 #'
@@ -37,7 +38,3 @@
 #' @format A list
 #' @keywords datasets, pubmed, test, literature
 "all_counts"
-
-
-
-

@@ -16,8 +16,8 @@
 #' @export
 #' @examples
 #'   gene <- c('CD4','CD14', "AIF1", "ACVR1", "CDY2A")
-#'   terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell", 
-#'   "CD8 T cell","FCGR3A+ Monocyte", "NK cell", "Dendritic cell", 
+#'   terms_of_interest <- c("CD4 T cell", "CD14+ Monocyte", "B cell",
+#'   "CD8 T cell","FCGR3A+ Monocyte", "NK cell", "Dendritic cell",
 #'   "Megakaryocyte", 'immunity')
 #'   literature_counts <- get_literature_score(gene, terms_of_interest)
 #'   P <-plot_literature_score(literature_counts, return_ggplot = TRUE)
@@ -43,8 +43,9 @@ plot_literature_score <-
     plot_counts$labels <- labels[match(plot_counts$breaks, breaks)]
     plot_counts$number_of_articles <- plot_counts[, 3]
     
-    lbs <- c("0", "1-10", "11-50", "51-100", "100-500", "500+")[which(breaks %in% levels(factor(plot_counts$breaks)))]
-    vls <-c(
+    lbs <-
+      c("0", "1-10", "11-50", "51-100", "100-500", "500+")[which(breaks %in% levels(factor(plot_counts$breaks)))]
+    vls <- c(
       "0" = "black",
       "1-10" = "rosybrown2",
       "11-50" = "lightsalmon1",
@@ -53,7 +54,8 @@ plot_literature_score <-
       "500+" = 'red3'
     )[which(breaks %in% levels(factor(plot_counts$breaks)))]
     p <-
-      ggplot(plot_counts, aes(Genes, Topic, fill = labels, label = number_of_articles)) +
+      ggplot(plot_counts,
+             aes(Genes, Topic, fill = labels, label = number_of_articles)) +
       geom_tile(aes(fill = labels)) +
       theme(
         panel.background = element_rect(
@@ -65,10 +67,8 @@ plot_literature_score <-
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()
       ) +
-      scale_fill_manual(
-        values = vls,
-        name = "Article counts"
-      ) 
+      scale_fill_manual(values = vls,
+                        name = "Article counts")
     if (return_ggplot) {
       return(p)
     } else{

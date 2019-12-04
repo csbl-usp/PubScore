@@ -99,12 +99,12 @@ get_literature_score <-
         data.frame("Genes" = "n",
                    "Topic" = "n",
                    "count" = "n")
-      small_counts_full <- small_counts_full[-1,]
+      small_counts_full <- small_counts_full[-1, ]
       all_counts <-
         data.frame("Genes" = "n",
                    "Topic" = "n",
                    "count" = "n")
-      all_counts <- all_counts[-1, ]
+      all_counts <- all_counts[-1,]
       
       message("Querying Pubmed. Might take a while for common terms.")
       
@@ -123,7 +123,7 @@ get_literature_score <-
         
         
         small_counts <-
-          gene_counts[gene_counts$hgnc_symbol %in% genes,]
+          gene_counts[gene_counts$hgnc_symbol %in% genes, ]
         
         small_counts <- small_counts[, c("hgnc_symbol", "Freq")]
         colnames(small_counts) <- c("Genes", "count")
