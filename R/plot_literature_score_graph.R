@@ -126,7 +126,7 @@ set_genes_to_label <-
 #' @param name The name of the plot.
 #' @param color The color of the plot. Defaults to a shade of red ("#B30000FF").
 #' @param max_number_of_labels The max number of gene labels to show.  Defaults to 10.
-#' @import igraph
+#' @importFrom igraph degree set_vertex_attr graph.data.frame
 #' @import ggrepel
 #' @import ggplot2
 #' @return A ploty/ggplot2 object is either returned or directly plotted
