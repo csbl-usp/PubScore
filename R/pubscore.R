@@ -461,7 +461,7 @@ setMethod("test_score", signature("PubScore"),
                     rbind(simulation_of_literature_null, new_line)
                   Sys.sleep(0.2)
                 }, error = function(e) {
-                  print(e)
+                  message(e)
                 })
               }
               simulation_of_literature_null <-
@@ -475,8 +475,8 @@ setMethod("test_score", signature("PubScore"),
               pvalue <-
                 sum(distribution_of_scores[, 1] >= score) / length(distribution_of_scores[, 1])
               
-              print('The p-value by simulation is:')
-              print(pvalue)
+              message('The p-value by simulation is:')
+              message(pvalue)
               pub@p_value <- pvalue
               return(pub)
             }
@@ -489,8 +489,8 @@ setMethod("test_score", signature("PubScore"),
               pvalue <-
                 sum(distribution_of_scores[, 1] >= score) / length(distribution_of_scores[, 1])
               
-              print('The p-value by simulation is:')
-              print(pvalue)
+              message('The p-value by simulation is:')
+              message(pvalue)
               pub@p_value <- pvalue
               return(pub)
             }
