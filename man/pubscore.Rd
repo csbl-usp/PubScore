@@ -11,7 +11,7 @@ pubscore(terms_of_interest, genes, gene2pubmed = FALSE)
 
 \item{genes}{A vector with multiple genes.}
 
-\item{gene2pubmed}{Boolean defining if gene2pubmed db is going to be used. Defaults to FALSE.}
+\item{gene2pubmed}{Logical (TRUE / FALSE) defining if gene2pubmed db is going to be used. Defaults to FALSE.}
 }
 \value{
 Object of class \code{PubScore}

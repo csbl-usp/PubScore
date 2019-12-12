@@ -3,17 +3,24 @@
 \docType{data}
 \name{hgcn_entrez_reference}
 \alias{hgcn_entrez_reference}
-\title{hgcn_entrez_reference
-biomaRt results (october 2019) for entrezids and gene symbols.
-processed.}
-\format{A list}
+\title{hgcn_entrez_reference}
+\format{An object of class \code{data.frame}}
 \usage{
 data(hgcn_entrez_reference)
 }
 \description{
-hgcn_entrez_reference
-biomaRt results (october 2019) for entrezids and gene symbols.
-processed.
+Contains the result of a query to the biomaRt service done in October, 2019.
+}
+\details{
+2 columns: entrezgene_id (containing the Entrez ids) and 
+hgnc_symbol (containing gene symbols from the HUGO gene nomenclature consortium)
+
+20491 rows, for the mapping between the two nomenclatures for human genes.
+}
+\references{
+Mapping identifiers for the integration of genomic datasets with 
+the R/Bioconductor package biomaRt. Steffen Durinck,Paul T. Spellman, Ewan Birney and Wolfgang Huber, 
+Nature Protocols 4, 1184-1191 (2009).
 }
 \keyword{datasets,}
 \keyword{literature}

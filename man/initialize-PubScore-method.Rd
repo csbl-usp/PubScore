@@ -15,7 +15,7 @@
 
 \item{terms_of_interest}{A list of terms of interest related to the topic you want to find the relevance.}
 
-\item{gene2pubmed}{Boolean defining if gene2pubmed db is going to be used.}
+\item{gene2pubmed}{Logical (TRUE / FALSE) defining if gene2pubmed db is going to be used.}
 }
 \value{
 A object of the PubScore class

@@ -4,13 +4,25 @@
 \name{all_counts}
 \alias{all_counts}
 \title{all_counts}
-\format{A list}
+\format{An object of class \code{data.frame}}
 \usage{
 data(all_counts)
 }
 \description{
-A dataframe with all counts for total genes in the Dengue dataset
-and the term Dengue. Outcome of the test_score method of the pubscore class
+A dataframe with all pubmed counts  for the genes in the Dengue dataset in relation 
+to the term "Dengue".
+}
+\details{
+Outcome of the test_score method of the pubscore class.
+As this function may take a long time, this dataset speeds up the vignette.
+
+Contains:
+3 columns: 
+#tax_id: The reference ID for the taxon. All are 9606 (humans).
+GeneID: The Entrez ID code for a given gene.
+PubMedID: A PubMed ID for a paper that mentions the gene in the "Gene ID" column.
+
+1335548 rows: gene-paper associations in the gene2pubmed database.
 }
 \keyword{datasets,}
 \keyword{literature}
