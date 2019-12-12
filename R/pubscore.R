@@ -17,7 +17,7 @@ setOldClass('gtable')
 #' @slot terms_of_interest A list of terms of interest related to the topic you want to find the relevance.
 #' @slot genes The genes to which you want to calculate and visualize the literature score.
 #' @slot date The date when the object was initialized. PubScore counts will likely increase with time.
-#' @slot gene2pubmed Boolean noting if gene to pubmed was used or not.
+#' @slot gene2pubmed Logical (TRUE / FALSE) noting if gene to pubmed was used or not.
 #' @slot counts A data frame with the counts retrieved on PubMed
 #' @slot network A visualization of the results found in a network
 #' @slot heatmap A visualization of the results found in a heatmap
@@ -42,7 +42,7 @@ setClass(
 #' @param .Object The object of signature PubScore that is foinf to be created
 #' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance.
 #' @param genes The genes to which you want to calculate and visualize the literature score.
-#' @param gene2pubmed Boolean defining if gene2pubmed db is going to be used.
+#' @param gene2pubmed Logical (TRUE / FALSE) defining if gene2pubmed db is going to be used.
 #'@return A object of the PubScore class
 setMethod('initialize', signature('PubScore'),
           function(.Object,
@@ -138,7 +138,7 @@ setMethod(
 #'
 #' @param terms_of_interest A list of terms of interest related to the topic you want to find the relevance for
 #' @param genes A vector with multiple genes.
-#' @param gene2pubmed Boolean defining if gene2pubmed db is going to be used. Defaults to FALSE.
+#' @param gene2pubmed Logical (TRUE / FALSE) defining if gene2pubmed db is going to be used. Defaults to FALSE.
 #' @return Object of class \code{PubScore}
 #' @export
 
