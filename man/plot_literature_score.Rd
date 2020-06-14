@@ -4,8 +4,7 @@
 \alias{plot_literature_score}
 \title{plot_literature_score}
 \usage{
-plot_literature_score(plot_counts, return_ggplot = FALSE,
-  is_plotly = FALSE)
+plot_literature_score(plot_counts, return_ggplot = FALSE, is_plotly = FALSE)
 }
 \arguments{
 \item{plot_counts}{The dataframe returned from the get_literature_score function}

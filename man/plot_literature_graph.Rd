@@ -4,8 +4,12 @@
 \alias{plot_literature_graph}
 \title{#'plot_literature_graph}
 \usage{
-plot_literature_graph(plot_counts, name, color = "#B30000FF",
-  max_number_of_labels = 10)
+plot_literature_graph(
+  plot_counts,
+  name,
+  color = "#B30000FF",
+  max_number_of_labels = 10
+)
 }
 \arguments{
 \item{plot_counts}{The dataframe returned from the get_literature_score function}

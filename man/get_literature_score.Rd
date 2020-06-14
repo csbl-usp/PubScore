@@ -4,9 +4,15 @@
 \alias{get_literature_score}
 \title{get_literature_score}
 \usage{
-get_literature_score(genes, terms_of_interest, gene2pubmed = FALSE,
-  return_all = FALSE, wait_time = 0, show_progress = TRUE,
-  verbose = FALSE)
+get_literature_score(
+  genes,
+  terms_of_interest,
+  gene2pubmed = FALSE,
+  return_all = FALSE,
+  wait_time = 0,
+  show_progress = TRUE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{genes}{A vector with multiple genes.}

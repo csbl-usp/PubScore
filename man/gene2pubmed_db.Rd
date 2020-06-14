@@ -4,7 +4,9 @@
 \name{gene2pubmed_db}
 \alias{gene2pubmed_db}
 \title{human genes on gene2pubmed_db}
-\format{An object of class \code{data.frame}}
+\format{
+An object of class \code{data.frame}
+}
 \usage{
 data(gene2pubmed_db)
 }

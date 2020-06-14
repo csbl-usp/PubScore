@@ -4,7 +4,9 @@
 \name{hgcn_entrez_reference}
 \alias{hgcn_entrez_reference}
 \title{hgcn_entrez_reference}
-\format{An object of class \code{data.frame}}
+\format{
+An object of class \code{data.frame}
+}
 \usage{
 data(hgcn_entrez_reference)
 }

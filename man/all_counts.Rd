@@ -4,7 +4,9 @@
 \name{all_counts}
 \alias{all_counts}
 \title{all_counts}
-\format{An object of class \code{data.frame}}
+\format{
+An object of class \code{data.frame}
+}
 \usage{
 data(all_counts)
 }
