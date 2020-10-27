@@ -1,7 +1,7 @@
 Package: PubScore
 Type: Package
 Title: Automatic calculation of literature relevance of genes
-Version: 1.1.0
+Version: 1.2.0
 Authors@R: c(person("Tiago", "Lubiana", email = "tiago.lubiana.alves@usp.br",
   role = c("aut", "cre")), person("Helder", "Nakaya", email = "hnkaya@usp.br",
   role = c("aut","ths")))
