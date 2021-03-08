@@ -128,7 +128,7 @@ target <- infection$infection
 exprs <- as.data.frame(SummarizedExperiment::assay(scDengue,'logcounts'))
 discrete_expression <- as.data.frame(FCBF::discretize_exprs(exprs))
 
-fcbf_features <- fcbf(discrete_expression, target, thresh = 0.05, verbose = FALSE)
+fcbf_features <- fcbf(discrete_expression, target, minimum_su = 0.05, verbose = FALSE)
 total_features <- rownames(exprs)
 head(fcbf_features)
 ```
